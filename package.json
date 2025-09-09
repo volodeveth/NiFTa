@@ -1,0 +1,27 @@
+{
+  "name": "nifta-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "dev:web": "pnpm -C apps/web dev",
+    "build:web": "pnpm -C apps/web build",
+    "start:web": "pnpm -C apps/web start",
+    "chain": "hardhat node",
+    "test": "hardhat test",
+    "lint": "eslint .",
+    "deploy:factory": "hardhat run scripts/deploy_factory.ts --network base",
+    "deploy:marketplace": "hardhat run scripts/deploy_marketplace.ts --network base"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts-upgradeable": "^5.0.1",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.7.0",
+    "hardhat": "^2.22.5",
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.12"
+  }
+}

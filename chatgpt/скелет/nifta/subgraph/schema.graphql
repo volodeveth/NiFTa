@@ -1,0 +1,42 @@
+type Collection @entity {
+  id: ID!
+  creator: Bytes!
+  uri: String!
+  priceWei: BigInt!
+  firstPaidMinter: Bytes
+  endTime: BigInt
+  paidMints: BigInt!
+  createdAt: BigInt!
+}
+
+type Mint @entity {
+  id: ID!
+  collection: Collection!
+  minter: Bytes!
+  tokenId: BigInt!
+  amount: BigInt!
+  value: BigInt!
+  referrer: Bytes
+  blockTime: BigInt!
+}
+
+type Listing @entity {
+  id: ID!
+  collection: Bytes!
+  tokenId: BigInt!
+  seller: Bytes!
+  amount: BigInt!
+  unitPrice: BigInt!
+  active: Boolean!
+  createdAt: BigInt!
+}
+
+type Purchase @entity {
+  id: ID!
+  collection: Bytes!
+  tokenId: BigInt!
+  buyer: Bytes!
+  amount: BigInt!
+  totalPaid: BigInt!
+  blockTime: BigInt!
+}

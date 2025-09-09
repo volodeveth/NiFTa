@@ -1,0 +1,515 @@
+Додаток має бути англомовний
+
+я хочу створити додаток для бейз епп та фаркастер у мережі бейз, із використанням останніх технологій, який ми будемо деплоїти на верцел через токен. додаток має бути максимально простий, суть додатка у створенні нфт ерц1155, де кріейтор безкоштовно створює нфт і платить тільки за газ і встановлюється фіксована ціна 0,0001 етх яку платять вже наступні мінтери, поки не буде мінчено першу 1000 нфт воно не має терміну мінту, як тільки замінчено 1000 нфт вмикається таймер 48 годин до завершення мінту, при мінті має розпреділятися прибуток наступним чином Комісії за минт: Creator (50%), First Minter (10%), Referral (20%), Platform (20%), ферст мінтер рахується вже коли платний мінт, тобто кріейтор ферст мінтером не рахується, а вже наступні, якщо копіювати посилання то до посилання приєднується адреса гаманця реферера і йому при мінті із посилання нараховується реферал комісія, платформі завжди йде 20% і якщо мінт відбувається без реферала то 40%, тобто невикористана комісія реферала залишається платформі, по завершенню мінтингу всі власники на сторінці нфт можуть продавати свої нфт за будь яку ціну яку забажають, 95% йде власнику нфт далі Комісії продажу: Royalty кріейтору (2.5%), Platform (2.5%), має бути кабінет, де можна ввести свій нік і фото та короткий дескріпшн і приєднати соц мережі екс і фаркастер і сайт і має бути видно створені та мінчені нфт у різних закладках, має бути сторінка трендінг як головна на якій буде видно тренди за 5 хвилин, годину, добу та 7 днів по 10 трендових нфт в кожній категорії, також має бути сторінка експлоур де будуть всі останні нфт із можливістю пошуку за назвою нфт та назвою кріейтора або номера гаманця і має бути сторінка із нфт які продаються, у всіх каталогах трендінг та експлоур має бути видно скільки мінчено нфт, кріейтора, час або заморожений або таймер відліку і саме нфт, а у каталозі де продаються має бути видно найнижчу ціну, скільки всього продається, кріейтора. по самому контракту створюємо на базі ерц1155 по принципу фекторі Factory (Основний контракт)
+
+  - Створює колекції через Factory pattern з клонуванням
+  - Управляє економічною моделлю з розподілом комісій
+  - Комісії за минт: Creator (50%), First Minter (10%), Referral (20%), Platform (20%)
+
+  - Підтримує персональні та звичайні колекції
+
+  2. Collection (ERC-1155)
+
+  - ERC-1155 стандарт для газової ефективності
+  - Перший минт creator'а безкоштовний
+  - Система відліку 48 годин після 1000 мінтів
+  - Автоматична система розподілу комісій
+
+  3. Marketplace
+
+  - Розширений маркетплейс з офферами та аукціонами
+ 
+  - Комісії продажу: Royalty (2.5%), Platform (2.5%)
+  - Система ескроу для офферів
+
+Економічна модель:
+  - Унікальна система розподілу комісій між творцями, реферерами та платформою
+
+  - Безкоштовний перший минт для творців
+
+  Безпека:
+  - UUPS upgradeable pattern
+  - ReentrancyGuard та Pausable функціональність
+  - Валідація IPFS URI для метаданих
+
+
+  UX/Performance:
+  - Factory pattern для зменшення gas costs
+  - ERC-1155 для батч-операцій
+
+  - Інтеграція з RainbowKit для зручного підключення гаманців а також фаркастер волет та бейз епп
+
+проаналізуй всю потрібну документацію, проаналізуй проект, дай свої пропозиції якщо я щось забув або не врахував, оптимізуй додаток для максимальної простоти та легкості і після всього аналізу видай повну інструкцію для клод код із кроками та інформацією для створення повноцінного додатка
+ChatGPT said:
+Thought for 1m 16s
+
+Класна ідея. Нижче — повний, перевірений план: архітектура, тонкощі економіки/безпеки, інтеграції з Base App та Farcaster (Mini Apps), індексація, фронтенд-стек і CI/CD через Vercel токен. Я додам свої пропозиції для спрощення та зменшення газу, а наприкінці дам «інструкцію для коду» — чіткі кроки, які деви зможуть виконати без додаткових уточнень.
+
+1) Ключові вимоги та що я пропоную вдосконалити
+
+Те, що ви хочете:
+
+Фабрика (Factory) ➜ клонування ERC-1155 колекцій; перший мінт творця безкоштовний; фіксована ціна 0.0001 ETH; після перших 1000 платних мінтів запускається таймер 48 год, далі мінт завершується.
+
+Розподіл при мінті: Creator 50%, First Minter 10% (перший платний мінтер), Referral 20%, Platform 20% (або 40% якщо немає реферала).
+
+Після завершення мінту — маркетплейс з продажами, спліт: 95% власнику, 2.5% роялті кріейтору, 2.5% платформі.
+
+Кабінет користувача, Trending (5 хв / 1 год / 24 год / 7 днів), Explore, сторінка «Продаються».
+
+Інтеграції: Base App, Farcaster (Mini Apps), RainbowKit (+ Farcaster wallet), деплой на Vercel через токен.
+
+Мої додаткові пропозиції для простоти/безпеки:
+
+Винос розподілу на 0xSplits (готові, аудитуні, газово-ефективні контракти) замість ручного перерахунку у вашому контракті. Це спростить код, зменшить ризики і дасть авто-виплати будь-яким токеном. Ви все одно зможете формувати динамічний Split (Creator / FirstMinter / Referrer / Platform) на льоту при кожному мінті або на серію мінтів колекції. 
+docs.splits.org
+splits.org
+
+Роялті оголошувати через ERC-2981 (для сумісності з зовнішніми маркетами). Ваш внутрішній маркетплейс застосовує 2.5%+2.5%, а зовнішні ринки зчитають роялті зі стандарту. 
+Ethereum Improvement Proposals
+
+Mini Apps замість Frames v2 (Farcaster перейменував/депрекейтив). Всі нові інтеграції робити як Mini App з транзакційними діями (mint) всередині клієнта. 
+docs.farcaster.xyz
++1
+
+Фронтенд-стек: Next.js + wagmi/viem + RainbowKit + OnchainKit (офіційні гайди Base), що спростить підключення гаманців і роботу з Base. 
+RainbowKit
+Base Documentation
++1
+
+Індексація: Subgraph у The Graph (Base підтримується). Це дасть швидкі «Trending/Explore» без важких запитів по RPC. 
+The Graph
+
+IPFS best practices: CIDv1, каталоги, валідований uri для ERC-1155 ( {id} у 64-симв. hex ) + пінінг. 
+IPFS Documentation
+docs.opensea.io
+OpenZeppelin Forum
+
+UUPS/Upgrades: застосовуємо OpenZeppelin Upgrades Plugins (Hardhat/Foundry). Зверніть увагу, що OZ Defender закриває реєстрації, але працює до 2026 — можна без нього. 
+OpenZeppelin Docs
++2
+OpenZeppelin Docs
++2
+
+Безпека: ReentrancyGuard, Pausable, pull-payments/спліти. Це стандартизовано в OZ. 
+OpenZeppelin Docs
++1
+
+Маркетплейс: щоб не ускладнювати — етап 1: фікс-прайс escrow-продаж у вашому контракті; етап 2: оффери/аукціони через інтеграцію з Seaport або поступово додати свої. Seaport — battle-tested. 
+docs.opensea.io
+GitHub
+
+Base мережа: офіційні параметри/chainId 8453, приклади з viem/wagmi. 
+Base Documentation
++1
+
+2) Смарт-контракти: дизайн і події
+2.1 Factory (Upgradeable UUPS)
+
+Функції:
+
+createCollection(CreateParams) ➜ клон ERC-1167 або створення UUPS-імплементації колекції (якщо хочете апгрейди на рівні колекцій). Рекомендую клон без апгрейдів для колекцій (дешевше), а апгрейдний Factory для керування фі пайплайнами. 
+OpenZeppelin Docs
+
+Зберігає platformFeeReceiver (ваш спліт/гаманець), defaultRoyaltyBps (250 → 2.5%), mintPrice (0.0001 ETH), referralBps (2000 → 20%), firstMinterBps (1000 → 10%), creatorBps (5000 → 50%).
+
+Емісія подій: CollectionCreated(collection, creator, salt, params).
+
+Принцип «перший платний мінт → firstMinter»: Factory або Колекція тримає firstPaidMinter і ставить при першому платному mint (creator free mint не враховувати).
+
+2.2 Collection (ERC-1155)
+
+Наслідування: ERC1155, ERC1155Supply, ERC2981 (для роялті), ReentrancyGuard, опційно Pausable. 
+OpenZeppelin Docs
+
+Параметри:
+
+price = 0.0001 ether
+
+maxOpenMintsTrigger = 1000 (коли досягнуто — стартує endTime = block.timestamp + 48h; до тригера — безстроковий мінт)
+
+firstPaidMinter (address)
+
+platformReceiver (address або спліт-контракт)
+
+creator (immutable)
+
+uri (з {id}) або пер-NFT URI (дорожче по газу). З практики ERC-1155 {id} ➜ 64 hex lowercased. 
+OpenZeppelin Forum
+
+Функції:
+
+creatorFreeMint() — одноразовий, лише для creator, встановлює загальні змінні/події.
+
+mint(uint256 id, uint256 amount, address ref) — платний мінт:
+
+require: block.timestamp < endTime (якщо таймер запущено)
+
+встановити firstPaidMinter якщо ще address(0)
+
+розподіл коштів: виклик 0xSplits або вашого internal splitter (див. нижче)
+
+якщо totalPaidMintsReach(1000) ➜ endTime = now + 48h
+
+Події:
+
+MintPaid(minter, id, amount, value, referrer)
+
+FirstPaidMinterSet(minter)
+
+TimerStarted(endTime)
+
+Роялті:
+
+setDefaultRoyalty(creator, 250) і додатково платформні 2.5% реалізувати логікою маркетплейсу (ERC-2981 покриває лише креатора). 
+Ethereum Improvement Proposals
+
+Варіант розподілу (простий):
+
+У mint() обчислити частки і викликати Splits: або єдиний спліт для конкретного мінту, або «пас-через» (pass-through) куди перераховується сума, а Splits вже далі ділить кошти між creator / firstPaidMinter / referrer / platform. Це зменшує ризик помилок і реверс-атак, і не тримає баланс у вашому контракті. 
+docs.splits.org
+
+Якщо без 0xSplits: використовуйте pull-платежі (PaymentSplitter модель) ➜ адресати самі забирають належне. Це безпечніше за «push» і захищає від реентрансі. 
+OpenZeppelin Docs
++1
+
+2.3 Marketplace (етап 1 — простий фікс-прайс)
+
+Лістинг: структура {seller, collection, id, amount, unitPrice, deadline}.
+
+Покупка: переводить ETH в escrow контракт, перевіряє доступність, робить safeTransferFrom до покупця, далі розділяє кошти:
+
+95% — продавцю
+
+2.5% — креатору (за ERC-2981 royaltyInfo) або ручно, якщо 2981 повертає інші bps
+
+2.5% — платформі
+
+Події: Listed, Purchase, Cancel.
+
+Безпека: nonReentrant, «checks-effects-interactions», валідація дедлайнів/сигнатур для офферів пізніше. Для аукціонів/офферів у етапі 2 інтегруйте Seaport (JS SDK + протокол) замість винаходити з нуля. 
+docs.opensea.io
+npm
+
+3) Економіка, реферали та крайові випадки
+
+Первинний мінт (0.0001 ETH):
+Creator 50%, FirstPaidMinter 10%, Referrer 20% (якщо є), Platform 20%. Якщо реферала немає — Platform отримує 40%.
+Реалізація: в mint() визначити referrer = ref == address(0) ? platform : ref, а далі спліт.
+FirstPaidMinter завжди ≠ creator: ставиться при першому платному мінті.
+
+Анти-сібіл/зловживання рефералами: заборонити referrer == minter, а також referrer == creator (за бажанням).
+
+Таймер 48 год: старт лише при paidMints >= 1000. До того — endTime = 0 (відкритий). Після endTime — mint disabled.
+
+Роялті 2.5% + платформа 2.5%: через ERC-2981 повертає 2.5% на адресу креатора; платформа утримує 2.5% у маркет-контракті (внутрішнє правило). 
+Ethereum Improvement Proposals
+
+4) Індексація та фіди (Trending / Explore / For Sale)
+
+The Graph Subgraph для Base:
+
+Індексувати події: CollectionCreated, MintPaid, TimerStarted, Listed, Purchase, Cancel.
+
+Рахувати:
+
+Trending: вікна 5 хв / 1 год / 24 год / 7 днів за кількістю мінтів і виручкою (sum ETH).
+
+Explore: останні створені/мінчені (сортування за блок-часом).
+
+For Sale: активні лістинги: найнижча ціна, кількість лотів, творець.
+
+Розгортання у Subgraph Studio (Base), далі публікація за потреби. 
+The Graph
+
+5) Зберігання метаданих (ERC-1155)
+
+URI: ipfs://<CID>/metadata/{id}.json, де {id} — 64-симв. hex (lowercase, без 0x). Дозволяє сумісність з маркетами. 
+docs.opensea.io
+OpenZeppelin Forum
+
+IPFS: CIDv1, директорії для ассетів/метаданих, пінінг (Pinata/NFT.Storage/власний IPFS). 
+IPFS Documentation
+classic-app.nft.storage
+
+6) Farcaster (Mini Apps), профілі, соц. інтеграції
+
+Mini Apps (кол. Frames v2): робіть транзакційні кнопки «Mint on Base» у каст-картці, підпис через Farcaster Wallet/Signer. 
+docs.farcaster.xyz
+
+Signers / Neynar: для пабліку кастів з вашого додатку та фідів/пошуку використовуйте Neynar v2 API та managed signers. 
+docs.neynar.com
++1
+
+Embeds/OG: коректні Open Graph мета-теги для прев’ю та reset кешу за потреби. 
+docs.farcaster.xyz
+
+7) Інтеграція з Base App та підключення гаманця
+
+Base офіційні гайди (OnchainKit + viem/wagmi/RainbowKit) — швидкий старт і коректні chain-параметри (Mainnet 8453). 
+Base Documentation
++2
+Base Documentation
++2
+
+RainbowKit (підтримка Base, налаштування initialChain): швидке підключення EOA/мобільних гаманців. 
+RainbowKit
++1
+
+8) Деплой і DevOps
+
+Vercel: деплой CLI з токеном (vercel --token=...), або REST API з Bearer-токеном. 
+Vercel
++2
+Vercel
++2
+
+Мережа Base: RPC/chainId 8453 (офіційні ендпоінти або провайдери типу QuickNode/Tenderly). 
+Base Documentation
+QuickNode
+docs.tenderly.co
+
+Upgrades: Hardhat Upgrades Plugin (UUPS) для Factory/Marketplace. 
+OpenZeppelin Docs
+
+9) Безпека
+
+Модифікатори: nonReentrant, whenNotPaused. Перевірки до ефектів, потім взаємодії (CEI). 
+OpenZeppelin Docs
+
+Патерни: escrow/pull-payments, мінімізація зберігання балансів у контракті. Наукові/оглядові джерела підтверджують коректність escrow-підходу. 
+Springer Link
+DNB Portal
+
+Аудит чек-лист: загальні вразливості Solidity, доступи/ролі. 
+QuickNode
+krayondigital.com
+
+10) «Інструкція для коду» — покроково
+10.1 Репозиторій / пакети
+
+Scaffold фронтенд (Next.js + wagmi + RainbowKit):
+
+pnpm create @rainbow-me/rainbowkit@latest
+
+
+Додайте viem, @coinbase/onchainkit та підтримку Base chain. 
+RainbowKit
+Base Documentation
+
+Смарт-контракти: Hardhat або Foundry з OpenZeppelin Contracts + Upgrades. 
+OpenZeppelin Docs
+
+0xSplits SDK (за бажанням), або власний pull-виплати модуль. 
+docs.splits.org
+
+The Graph: graph init, graph deploy (Studio для Base). 
+The Graph
+
+10.2 Контракти — мінімальні інтерфейси
+
+IFactory.sol (UUPS)
+
+createCollection(params) returns (address collection)
+
+setPlatformReceiver(address)
+
+setDefaultRoyaltyBps(uint96)
+
+подія CollectionCreated(...)
+
+Collection1155.sol
+
+Наслідування: ERC1155, ERC1155Supply, ERC2981, ReentrancyGuard, опційно Pausable.
+
+creatorFreeMint(uint256 id, uint256 amount) (одноразово)
+
+mint(uint256 id, uint256 amount, address referrer) payable
+
+require(msg.value == price * amount)
+
+встановити firstPaidMinter якщо порожній
+
+розподіл через 0xSplits або internal pull-баланси
+
+інкремент лічильників; якщо досягнуто 1000 — endTime = now + 48h (подія TimerStarted)
+
+setURI(string memory newUri) (опційно owner/creator до «freezе metadata»)
+
+royaltyInfo(tokenId, salePrice) — 2.5% кріейтору (ERC-2981). 
+Ethereum Improvement Proposals
+
+Marketplace.sol (етап 1)
+
+list(collection, id, amount, unitPrice, deadline)
+
+buy(listingId, amount) payable
+
+перевірити актуальність
+
+safeTransferFrom
+
+розподіл: 95% seller, 2.5% creator (через royaltyInfo), 2.5% platform
+
+cancel(listingId)
+
+Події: Listed, Purchase, Cancel
+
+10.3 Розподіл у mint()
+
+Через 0xSplits:
+
+Створюєте/використовуєте Split (recipientShares = [creator 50, firstMinter 10, ref 20 або 0, platform 20 або 40]) і відправляєте туди msg.value. Потім отримувачі можуть distribute. 
+docs.splits.org
+
+Без 0xSplits (pull-модель):
+
+У контракті тримаєте мапу balances[recipient] += amount. Публічні claim() для ETH/ ERC20; nonReentrant. OZ показує патерни pull-платежів. 
+OpenZeppelin Docs
+
+10.4 Subgraph (приклад сутностей)
+
+Collection { id, creator, uri, price, firstPaidMinter, endTime, totalMintsPaid }
+
+Mint { id, collection, minter, referrer, amount, value, blockTime }
+
+Listing { id, seller, collection, tokenId, unitPrice, amount, active }
+
+Резолвери «Trending»: агрегуємо по часових вікнах (5m/1h/24h/7d). 
+The Graph
+
+10.5 Фронтенд (Next.js)
+
+WalletConnect / RainbowKit з initialChain={base}; viem клієнт на Base. 
+RainbowKit
+Base Documentation
+
+Кабінет: профіль (нік/фото/опис/лінки X/Farcaster/сайт), вкладки Created / Minted (з Subgraph), кнопка «Share» з реф-лінком (?ref=0x...).
+
+Trending: 4 секції з топ-10 за кожне вікно.
+
+Explore: стрічка останніх колекцій/мінтів + пошук за назвою/нікнеймом/адресою.
+
+For Sale: таблиця з найнижчою ціною (кальк з індексу), кількість лістингів, кріейтор.
+
+Farcaster Mini App: сторінка /frame із мета-тегами Mini App та endpoint’ами для дій «Mint»/«Open on Base». 
+docs.farcaster.xyz
+
+10.6 Farcaster інтеграція
+
+Neynar v2 для фідів/профілів/автентифікації; Managed Signers якщо хочете постити від імені користувача з вашого бекенду. 
+docs.neynar.com
++1
+
+Mini App з транзакціями (prompt tx) для мінту прямо в клієнті. 
+docs.neynar.com
+
+10.7 IPFS / метадані
+
+Пакуйте ассети і метадані в окремі директорії, використовуйте ipfs://CID/file. Дотримуйтеся специфікації ERC-1155 {id} (64-hex). 
+IPFS Documentation
+OpenZeppelin Forum
+
+10.8 Деплой на Base
+
+Параметри мережі (Mainnet 8453) з офіційних док. 
+Base Documentation
+
+Verify контрактів (Sourcify/Etherscan Base).
+
+Тести: сценарії на firstPaidMinter, таймер 48h, реферал=none (40% платформі), пауза/анпауз.
+
+10.9 Vercel (через токен)
+
+Створити Access Token ➜ vercel --token=$VERCEL_TOKEN для деплою з CI. Через REST API — Bearer-токен у заголовку. 
+Vercel
++2
+Vercel
++2
+
+11) Що ще врахувати
+
+KYC/комплаєнс для платформи: якщо прийматимете фіат/картки — знадобиться окремий шар (поки у вас лише on-chain ETH).
+
+Freeze metadata після завершення мінту, аби колекції були «стабільні» на ринках.
+
+Аналітика: подієвий лог через Subgraph + прості дашборди.
+
+Seaport інтеграція (етап 2): оффери/аукціони без написання свого аукціону. 
+docs.opensea.io
+
+12) Швидкі референси (основні джерела)
+
+ERC-1155 / метадані / {id}: OpenSea metadata & ID-substitution. 
+docs.opensea.io
+OpenZeppelin Forum
+
+Роялті: ERC-2981. 
+Ethereum Improvement Proposals
+
+Clones & Upgrades & Security: OpenZeppelin (Clones, Upgrades Plugins, ReentrancyGuard/Pausable, Pull/PaymentSplitter). 
+OpenZeppelin Docs
++3
+OpenZeppelin Docs
++3
+OpenZeppelin Docs
++3
+
+Base: підключення, chainId 8453, viem/wagmi/OnchainKit гіди. 
+Base Documentation
++3
+Base Documentation
++3
+Base Documentation
++3
+
+Farcaster: Mini Apps (депрекейт Frames v2), Signers/Neynar. 
+docs.farcaster.xyz
+docs.neynar.com
++1
+
+0xSplits для розподілу доходів. 
+docs.splits.org
+
+Vercel токен/CLI/API. 
+Vercel
++2
+Vercel
++2
+
+The Graph для Subgraph на Base. 
+The Graph
+
+Seaport (для етапу 2 маркету). 
+docs.opensea.io
+
+Підсумок
+
+Я спростила дизайн, щоб мінімізувати власну логіку виплат і ризики: Splits для мінтів, ERC-2981 для роялті, простий маркет на 1-му етапі, а для офферів/аукціонів — Seaport згодом.
+
+Інтеграції Base/RainbowKit/OnchainKit/Farcaster Mini Apps — по офіційних гайдах.
+
+Пошук/тренди/каталоги — через Subgraph на Base.
+
+Деплой фронта через Vercel токен.
+
+Хочеш, я згенерую каркас репозиторію (папки/файли/інтерфейси/схеми subgraph) і стартові контракти під ваші правила — відразу у наступному повідомленні.
+
+Worked for 1 minute
+
+З огляду на ваші плани щодо розгортання NFT‑маркетплейсу на Base із Farcaster‑інтеграцією, я запропонував повний дизайн смарт‑контрактів, економічної моделі та фронтенд‑архітектури. У ньому враховано стандарт ERC‑2981, який дозволяє оголошувати роялті як відсоток від ціни продажу (стандарт зобов’язує маркетплейси розраховувати винагороду у відсотках від суми транзакції
+nes-tech.medium.com
+), що забезпечить сумісність із зовнішніми ринками. Я порадив використовувати бібліотеки OpenZeppelin, зокрема UUPS‑проксі та плагіни для апгрейдів, оскільки це найліпший спосіб керувати оновлюваними контрактами; в документації підкреслюється, що UUPS є легковажнішим варіантом, а для спрощення рекомендується застосовувати готові плагіни від OpenZeppelin
+docs.openzeppelin.com
+.
+
+Для захисту від атак пропонував додати модулі ReentrancyGuard та Pausable; OpenZeppelin зазначає, що ReentrancyGuard допомагає запобігти повторним викликам функцій, а Pausable дає змогу у разі потреби тимчасово зупинити функціонал контракту
+docs.openzeppelin.com
+docs.openzeppelin.com
+. Щоб уникнути складних виплат у коді, рекомендовано використати 0xSplits або інший pull‑payment механізм: Splits пропонує відкриті, перевірені й безкоштовні контракти для розподілу коштів між учасниками й працює на багатьох мережах
+splits.org
+.
+
+Фронтенд слід побудувати на Next.js із wagmi/viem та RainbowKit, що забезпечить просте підключення до мережі Base й дозволить використовувати Farcaster Mini Apps для мітингу NFT. Для індексації та побудови стрічок «Trending/Explore/For Sale» запропоновано підняти субграф на The Graph.
+
+Якщо вам потрібен наступний крок – наприклад, створити каркас репозиторію з початковими файлами контрактів, прикладом субграфу та базовим фронтендом, дайте знати, і я підготую кодову структуру.

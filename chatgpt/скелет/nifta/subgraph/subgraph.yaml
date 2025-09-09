@@ -1,0 +1,5 @@
+specVersion: 1.0.0
+schema:
+  file: ./schema.graphql
+dataSources: []
+# Add dataSourceTemplates and programmatic deployments after on-chain addresses are known.

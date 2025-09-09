@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.env.local
+artifacts
+cache
+.DS_Store
+build
+coverage
+.next
+.turbo
+__pycache__
