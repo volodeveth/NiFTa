@@ -26,17 +26,17 @@ export default function Navigation() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-brand rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">N</span>
+        <div className="flex items-center justify-between h-14">
+          {/* Logo - Compact */}
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="w-7 h-7 bg-gradient-brand rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-base">N</span>
             </div>
-            <span className="text-xl font-bold text-gradient">NiFTa</span>
+            <span className="text-lg font-bold text-gradient">NiFTa</span>
           </Link>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Navigation Links - Simplified */}
+          <div className="hidden md:flex items-center space-x-6">
             {navigation.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
@@ -48,12 +48,12 @@ export default function Navigation() {
                   className={cn(
                     'flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/20'
-                      : 'text-dark-text-secondary hover:text-white hover:bg-dark-card/50'
+                      ? 'text-brand-primary bg-brand-primary/10'
+                      : 'text-dark-text-secondary hover:text-white'
                   )}
                 >
                   <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
+                  <span className="hidden lg:inline">{item.name}</span>
                 </Link>
               )
             })}
@@ -64,9 +64,9 @@ export default function Navigation() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 glass-effect border-t border-white/10">
-        <div className="flex items-center justify-around py-2">
+      {/* Mobile Navigation - Optimized */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 glass-effect border-t border-white/10 safe-area-pb">
+        <div className="flex items-center justify-around py-1.5">
           {navigation.map((item) => {
             const Icon = item.icon
             const isActive = pathname === item.href
@@ -76,14 +76,14 @@ export default function Navigation() {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  'flex flex-col items-center space-y-1 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200',
+                  'flex flex-col items-center space-y-0.5 px-2 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 min-w-0 flex-1',
                   isActive
                     ? 'text-brand-primary'
-                    : 'text-dark-text-secondary hover:text-white'
+                    : 'text-dark-text-secondary active:text-white'
                 )}
               >
                 <Icon className="w-5 h-5" />
-                <span>{item.name}</span>
+                <span className="truncate text-xs">{item.name}</span>
               </Link>
             )
           })}

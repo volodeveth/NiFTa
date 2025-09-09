@@ -187,48 +187,43 @@ export default function ExplorePage() {
         Showing {sortedCollections.length} collections
       </div>
 
-      {/* Collections Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Collections Grid - Mobile Optimized */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {sortedCollections.map((collection) => (
           <Link
             key={collection.id}
             href={`/collection/${collection.id}`}
-            className="group bg-dark-card rounded-xl p-6 border border-dark-border hover-lift hover:border-brand-primary/50 transition-all duration-300"
+            className="group bg-dark-card rounded-lg p-4 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95"
           >
             {/* Collection Image */}
-            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-              <div className="text-6xl opacity-50">🖼️</div>
+            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
+              <div className="text-4xl opacity-50">🖼️</div>
               
               {/* Status Badge */}
               <div className={cn(
-                'absolute top-3 left-3 px-2 py-1 rounded-lg text-xs font-medium',
+                'absolute top-2 right-2 w-2 h-2 rounded-full',
                 collection.isActive
-                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                  : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                  ? 'bg-green-400'
+                  : 'bg-red-400'
               )}>
-                {collection.isActive ? 'Active' : 'Ended'}
               </div>
             </div>
 
-            {/* Collection Info */}
-            <div className="space-y-3">
+            {/* Collection Info - Compact */}
+            <div className="space-y-2">
               <div>
-                <h3 className="text-lg font-semibold text-white group-hover:text-gradient transition-colors line-clamp-1">
+                <h3 className="text-sm font-semibold text-white group-hover:text-gradient transition-colors line-clamp-1">
                   {collection.name}
                 </h3>
-                <p className="text-dark-text-secondary text-sm">
+                <p className="text-dark-text-secondary text-xs line-clamp-1">
                   by {collection.creator}
                 </p>
               </div>
 
-              <p className="text-dark-text-muted text-sm line-clamp-2">
-                {collection.description}
-              </p>
-
-              {/* Stats */}
-              <div className="flex items-center justify-between text-sm">
+              {/* Stats Compact */}
+              <div className="flex items-center justify-between text-xs">
                 <div className="text-dark-text-secondary">
-                  {collection.minted}/{collection.totalSupply} minted
+                  {collection.minted}/{collection.totalSupply}
                 </div>
                 <div className="text-brand-primary font-medium">
                   {collection.price} ETH
@@ -236,27 +231,24 @@ export default function ExplorePage() {
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full bg-dark-surface rounded-full h-2">
+              <div className="w-full bg-dark-surface rounded-full h-1.5">
                 <div 
-                  className="h-2 bg-gradient-brand rounded-full transition-all duration-500"
+                  className="h-1.5 bg-gradient-brand rounded-full transition-all duration-500"
                   style={{ width: `${(collection.minted / collection.totalSupply) * 100}%` }}
                 />
               </div>
 
-              {/* Time Info */}
-              <div className="flex items-center justify-between text-sm">
-                <div className="text-dark-text-muted">
-                  Created {timeAgo(collection.createdAt)}
+              {/* Status */}
+              <div className="flex items-center justify-between text-xs">
+                <div className={cn(
+                  'font-medium',
+                  collection.isActive ? 'text-green-400' : 'text-red-400'
+                )}>
+                  {collection.isActive ? 'Active' : 'Ended'}
                 </div>
-                {collection.endTime > 0 && (
-                  <div className={cn(
-                    'font-medium',
-                    collection.isActive ? 'text-yellow-400' : 'text-red-400'
-                  )}>
-                    {collection.isActive 
-                      ? `Ends in ${Math.max(0, Math.floor((collection.endTime - Date.now() / 1000) / 3600))}h`
-                      : 'Ended'
-                    }
+                {collection.endTime > 0 && collection.isActive && (
+                  <div className="text-yellow-400 font-medium">
+                    {Math.max(0, Math.floor((collection.endTime - Date.now() / 1000) / 3600))}h left
                   </div>
                 )}
               </div>

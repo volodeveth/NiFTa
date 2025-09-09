@@ -41,61 +41,61 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Profile Header */}
-      <div className="bg-dark-card rounded-xl p-8 border border-dark-border mb-8">
-        <div className="flex items-start justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gradient-brand rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xl">
+      {/* Profile Header - Mobile Optimized */}
+      <div className="bg-dark-card rounded-xl p-4 border border-dark-border mb-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-brand rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-lg">
                 {address?.slice(2, 4).toUpperCase()}
               </span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white mb-1">
+              <h1 className="text-xl font-bold text-white mb-1">
                 {formatAddress(address!)}
               </h1>
-              <p className="text-dark-text-secondary">
+              <p className="text-dark-text-secondary text-sm">
                 NFT Creator & Collector
               </p>
             </div>
           </div>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-dark-surface border border-dark-border rounded-lg text-dark-text-secondary hover:text-white hover:border-brand-primary/50 transition-all">
+          <button className="flex items-center space-x-2 px-3 py-2 bg-dark-surface border border-dark-border rounded-lg text-dark-text-secondary hover:text-white hover:border-brand-primary/50 transition-all text-sm">
             <PencilIcon className="w-4 h-4" />
-            <span>Edit Profile</span>
+            <span className="hidden sm:inline">Edit</span>
           </button>
         </div>
 
-        {/* Wallet Address */}
-        <div className="bg-dark-surface rounded-lg p-4 mb-6">
+        {/* Wallet Address - Mobile Compact */}
+        <div className="bg-dark-surface rounded-lg p-3 mb-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-dark-text-muted text-sm mb-1">Wallet Address</p>
-              <p className="text-white font-mono text-sm">{address}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-dark-text-muted text-xs mb-1">Wallet Address</p>
+              <p className="text-white font-mono text-xs truncate">{address}</p>
             </div>
             <button 
               onClick={() => navigator.clipboard.writeText(address!)}
-              className="p-2 hover:bg-dark-border rounded-lg transition-colors"
+              className="p-2 hover:bg-dark-border rounded-lg transition-colors flex-shrink-0 ml-2"
             >
               <ClipboardIcon className="w-4 h-4 text-dark-text-secondary" />
             </button>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-6">
+        {/* Stats - Mobile Compact */}
+        <div className="grid grid-cols-3 gap-3">
           <div className="text-center">
-            <div className="text-2xl font-bold text-gradient">{mockCreated.length}</div>
-            <div className="text-dark-text-secondary text-sm">Collections Created</div>
+            <div className="text-lg font-bold text-gradient">{mockCreated.length}</div>
+            <div className="text-dark-text-secondary text-xs">Created</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-gradient">{mockCollected.length}</div>
-            <div className="text-dark-text-secondary text-sm">NFTs Collected</div>
+            <div className="text-lg font-bold text-gradient">{mockCollected.length}</div>
+            <div className="text-dark-text-secondary text-xs">Collected</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-gradient">
-              {mockCreated.reduce((sum, item) => sum + parseFloat(item.earnings), 0).toFixed(3)} ETH
+            <div className="text-lg font-bold text-gradient">
+              {mockCreated.reduce((sum, item) => sum + parseFloat(item.earnings), 0).toFixed(3)}
             </div>
-            <div className="text-dark-text-secondary text-sm">Total Earnings</div>
+            <div className="text-dark-text-secondary text-xs">ETH Earned</div>
           </div>
         </div>
       </div>
@@ -128,35 +128,35 @@ export default function ProfilePage() {
 
       {/* Tab Content */}
       {activeTab === 'created' && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {mockCreated.map((collection) => (
             <div
               key={collection.id}
-              className="bg-dark-card rounded-xl p-6 border border-dark-border hover:border-brand-primary/50 transition-all"
+              className="bg-dark-card rounded-lg p-4 border border-dark-border hover:border-brand-primary/50 transition-all"
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center">
-                    <span className="text-xl">🎨</span>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center">
+                    <span className="text-lg">🎨</span>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white">{collection.name}</h3>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base font-semibold text-white line-clamp-1">{collection.name}</h3>
                     <p className="text-dark-text-secondary text-sm">
                       {collection.minted}/{collection.total} minted
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-brand-primary font-semibold">
+                  <div className="text-brand-primary font-semibold text-sm">
                     {collection.earnings} ETH
                   </div>
-                  <div className="text-dark-text-secondary text-sm">Earned</div>
+                  <div className="text-dark-text-secondary text-xs">Earned</div>
                 </div>
               </div>
               
-              <div className="mt-4 w-full bg-dark-surface rounded-full h-2">
+              <div className="mt-3 w-full bg-dark-surface rounded-full h-1.5">
                 <div 
-                  className="h-2 bg-gradient-brand rounded-full transition-all duration-500"
+                  className="h-1.5 bg-gradient-brand rounded-full transition-all duration-500"
                   style={{ width: `${(collection.minted / collection.total) * 100}%` }}
                 />
               </div>
@@ -166,22 +166,22 @@ export default function ProfilePage() {
       )}
 
       {activeTab === 'collected' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {mockCollected.map((nft) => (
             <div
               key={nft.id}
-              className="bg-dark-card rounded-xl p-6 border border-dark-border hover-lift hover:border-brand-primary/50 transition-all duration-300"
+              className="bg-dark-card rounded-lg p-3 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95"
             >
-              <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-4 flex items-center justify-center">
-                <div className="text-6xl opacity-50">🖼️</div>
+              <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2 flex items-center justify-center">
+                <div className="text-2xl opacity-50">🖼️</div>
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold text-white mb-1">{nft.name}</h3>
-                <p className="text-dark-text-secondary text-sm mb-2">
-                  from {nft.collection}
+                <h3 className="text-sm font-semibold text-white mb-1 line-clamp-1">{nft.name}</h3>
+                <p className="text-dark-text-secondary text-xs mb-2 line-clamp-1">
+                  {nft.collection}
                 </p>
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-dark-text-muted">Owned</span>
                   <span className="text-brand-primary font-medium">{nft.owned}</span>
                 </div>

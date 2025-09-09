@@ -65,53 +65,44 @@ export default function SalePage() {
         </select>
       </div>
 
-      {/* Listings Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Listings Grid - Mobile Optimized */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {mockListings.map((listing) => (
           <div
             key={listing.id}
-            className="bg-dark-card rounded-xl p-6 border border-dark-border hover-lift hover:border-brand-primary/50 transition-all duration-300"
+            className="bg-dark-card rounded-lg p-3 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95"
           >
             {/* NFT Image */}
-            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-4 flex items-center justify-center">
-              <div className="text-6xl opacity-50">🖼️</div>
+            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2 flex items-center justify-center">
+              <div className="text-2xl opacity-50">🖼️</div>
             </div>
 
-            {/* NFT Info */}
-            <div className="space-y-3">
+            {/* NFT Info - Compact */}
+            <div className="space-y-1">
               <div>
-                <h3 className="text-lg font-semibold text-white line-clamp-1">
+                <h3 className="text-sm font-semibold text-white line-clamp-1">
                   {listing.name}
                 </h3>
-                <p className="text-dark-text-secondary text-sm">
-                  from {listing.collection}
+                <p className="text-dark-text-secondary text-xs line-clamp-1">
+                  {listing.collection}
                 </p>
               </div>
 
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-dark-text-muted text-xs">Current Price</p>
-                  <p className="text-brand-primary font-semibold text-lg">
-                    {listing.price} ETH
-                  </p>
+                <div className="text-brand-primary font-semibold text-sm">
+                  {listing.price} ETH
                 </div>
-                <div className="text-right">
-                  <p className="text-dark-text-muted text-xs">Listed</p>
-                  <p className="text-dark-text-secondary text-sm">
-                    {timeAgo(listing.listedAt)}
-                  </p>
+                <div className="text-dark-text-muted text-xs">
+                  {timeAgo(listing.listedAt)}
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-dark-border">
-                <p className="text-dark-text-muted text-xs mb-1">Seller</p>
-                <p className="text-dark-text-secondary text-sm">
-                  {listing.seller}
-                </p>
+              <div className="text-dark-text-muted text-xs line-clamp-1">
+                by {listing.seller}
               </div>
 
-              {/* Buy Button */}
-              <button className="w-full bg-gradient-brand text-white py-2 px-4 rounded-lg font-medium hover:opacity-90 transition-opacity">
+              {/* Buy Button - Compact */}
+              <button className="w-full bg-gradient-brand text-white py-1.5 px-3 rounded-lg font-medium hover:opacity-90 transition-opacity text-xs mt-2">
                 Buy Now
               </button>
             </div>
