@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { cn } from '@/lib/utils'
 import { 
-  TrendingUpIcon,
+  FireIcon,
   MagnifyingGlassIcon,
   ShoppingBagIcon,
   PlusCircleIcon,
@@ -13,7 +13,7 @@ import {
 } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Trending', href: '/', icon: TrendingUpIcon },
+  { name: 'Trending', href: '/', icon: FireIcon },
   { name: 'Explore', href: '/explore', icon: MagnifyingGlassIcon },
   { name: 'For Sale', href: '/sale', icon: ShoppingBagIcon },
   { name: 'Create', href: '/create', icon: PlusCircleIcon },

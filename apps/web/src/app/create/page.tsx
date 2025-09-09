@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { cn } from '@/lib/utils'
 import { 
@@ -13,10 +13,6 @@ import {
 
 export default function CreatePage() {
   const { address, isConnected } = useAccount()
-  const { writeContract, data: hash, isPending, error } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
-    hash,
-  })
 
   const [formData, setFormData] = useState({
     name: '',
@@ -389,10 +385,9 @@ export default function CreatePage() {
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={isPending}
-                className="flex-1 bg-gradient-brand text-white py-3 px-6 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                className="flex-1 bg-gradient-brand text-white py-3 px-6 rounded-lg font-medium hover:opacity-90 transition-opacity"
               >
-                {isPending ? 'Creating Collection...' : 'Create Collection'}
+                Create Collection
               </button>
             </div>
           </div>
