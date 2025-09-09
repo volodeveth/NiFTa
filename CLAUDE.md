@@ -76,26 +76,26 @@ NiFTa/
 ### Phase 1: Setup ✅
 - [x] Project structure created
 - [x] Initial CLAUDE.md documentation
-- [ ] Skeleton files copied to main directory
+- [x] Skeleton files copied to main directory
 
-### Phase 2: Smart Contracts
-- [ ] Factory contract implementation
-- [ ] Collection contract with minting logic
-- [ ] Marketplace contract for trading
-- [ ] Revenue distribution system
+### Phase 2: Smart Contracts ✅
+- [x] Factory contract implementation
+- [x] Collection contract with minting logic
+- [x] Marketplace contract for trading
+- [x] Revenue distribution system
 
-### Phase 3: Frontend
-- [ ] Basic UI components
-- [ ] Wallet connection
-- [ ] Trending page
-- [ ] Explore page
-- [ ] Create collection page
+### Phase 3: Frontend ✅
+- [x] Basic UI components
+- [x] Wallet connection
+- [x] Trending page
+- [x] Explore page
+- [x] Create collection page
 
-### Phase 4: Integration
-- [ ] Subgraph deployment
+### Phase 4: Integration ✅
+- [x] Subgraph schema created
 - [ ] Farcaster Mini App setup
-- [ ] GitHub repository
-- [ ] Vercel deployment
+- [x] GitHub repository
+- [x] Vercel deployment
 
 ### Phase 5: Testing & Launch
 - [ ] Contract testing
@@ -168,4 +168,6 @@ NEXT_PUBLIC_WC_PROJECT_ID=YourWalletConnectProjectId
 ---
 
 **Last Updated**: 2025-01-21  
-**Next Update**: After MVP completion
+**Status**: MVP Complete 🚀  
+**Live URL**: https://nifta-56xduqmkq-volodeveths-projects.vercel.app  
+**Domain**: nifta.fun (to be connected)

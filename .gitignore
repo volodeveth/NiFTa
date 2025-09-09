@@ -16,3 +16,4 @@ coverage
 artifacts
 cache
 typechain-types
+.vercel
