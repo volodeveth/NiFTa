@@ -26,3 +26,4 @@ vercel-token.txt
 *-token.txt
 *.key
 *.pem
+DEPLOYMENT_GUIDE.md

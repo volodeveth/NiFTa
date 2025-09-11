@@ -88,14 +88,20 @@ NiFTa/
 - [x] Basic UI components
 - [x] Wallet connection
 - [x] Trending page
-- [x] Explore page
+- [x] Explore page  
 - [x] Create collection page
+- [x] Mobile-first responsive design
+- [x] Navigation system (desktop + mobile bottom bar)
+- [x] Notification system with dropdown panel
+- [x] Custom wallet button for mobile
 
 ### Phase 4: Integration ✅
 - [x] Subgraph schema created
+- [x] GitHub repository (https://github.com/volodeveth/NiFTa)
+- [x] Vercel deployment (https://nifta-zeta.vercel.app)
+- [x] Mobile layout fixes and optimizations
+- [x] Z-index and navigation layering fixes
 - [ ] Farcaster Mini App setup
-- [x] GitHub repository
-- [x] Vercel deployment
 
 ### Phase 5: Testing & Launch
 - [ ] Contract testing
@@ -136,6 +142,40 @@ NiFTa/
 - **Vercel Token**: pUJUqZFTNRb0dVq5XiGANBRM
 - **Domain**: nifta.fun
 - **Network**: Base Mainnet (Chain ID: 8453)
+- **GitHub**: https://github.com/volodeveth/NiFTa
+
+## Quick Reference Commands
+
+### Git Commands
+```bash
+# Stage all changes
+git add .
+
+# Commit with proper message
+git commit -m "Your commit message
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+# Push to GitHub
+git push origin master
+```
+
+### Vercel Deployment
+```bash
+# Deploy to production (from root directory)
+npx vercel --token=pUJUqZFTNRb0dVq5XiGANBRM --prod
+
+# Check deployment logs if needed
+npx vercel inspect [deployment-url] --logs --token=pUJUqZFTNRb0dVq5XiGANBRM
+```
+
+### Project Structure Notes
+- **Root deployment**: Deploy from project root, not apps/web
+- **Vercel config**: vercel.json in root handles monorepo structure
+- **Build path**: apps/web/.next (configured in vercel.json)
+- **Auto-detection**: Vercel automatically detects Next.js and runs correct build commands
 
 ### Environment Variables
 ```
@@ -169,5 +209,30 @@ NEXT_PUBLIC_WC_PROJECT_ID=YourWalletConnectProjectId
 
 **Last Updated**: 2025-01-21  
 **Status**: MVP Complete 🚀  
-**Live URL**: https://nifta-ej8fbx2rm-volodeveths-projects.vercel.app  
+**Live URL**: https://nifta-zeta.vercel.app  
+**GitHub**: https://github.com/volodeveth/NiFTa  
 **Domain**: nifta.fun (to be connected)
+
+## Recent Updates (Mobile & UX Improvements)
+
+### Mobile Layout Fixes ✅
+- **Fixed z-index layering**: Top navigation (z-60) properly above bottom navigation (z-50)
+- **Resolved text overflow**: NFT cards now properly truncate text with whitespace control
+- **Improved spacing**: Added pb-24 padding and safe area utilities for mobile
+- **Enhanced navigation**: Separated desktop (top) and mobile (bottom) navigation cleanly
+
+### UI/UX Enhancements ✅
+- **Gradient branding**: NiFTa logo text now uses brand gradient colors
+- **Mobile wallet button**: Custom wallet icon instead of full button on mobile
+- **Professional navigation**: Semantic HTML with proper header/nav structure
+
+### Notification System ✅
+- **Smart notifications**: Dropdown panel with 5 notification types (mint, purchase, sale, offer, info)
+- **Clean indicator**: Small blue dot instead of numbers for unread notifications
+- **Mock data**: Full notification system with proper UI/UX patterns
+- **Responsive design**: Works perfectly on both desktop and mobile
+
+### Technical Improvements ✅
+- **Better CSS**: Added line-clamp utilities and safe area support
+- **Improved imports**: Fixed missing icons and proper error handling
+- **Clean architecture**: Separated concerns between components
