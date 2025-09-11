@@ -83,7 +83,7 @@ export default function TrendingPage() {
           Trending on NiFTa
         </h1>
         <p className="text-dark-text-secondary text-lg max-w-2xl mx-auto">
-          Discover the hottest NFT collections minting right now on Base network
+          Discover the hottest NFTs minting right now on Base network
         </p>
       </div>
 
@@ -111,75 +111,55 @@ export default function TrendingPage() {
         </div>
       </div>
 
-      {/* Trending Grid - Mobile Optimized */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+      {/* Trending List - Compact */}
+      <div className="space-y-2 mb-8">
         {currentData.map((nft, index) => (
           <Link
             key={nft.id}
             href={`/nft/${nft.id}`}
-            className="group bg-dark-card rounded-lg p-3 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95"
+            className="group bg-dark-card rounded-lg p-3 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95 flex items-center space-x-3"
           >
             {/* Rank Badge */}
-            <div className="flex items-center justify-between mb-2">
-              <div className={cn(
-                'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold',
-                index === 0 ? 'bg-yellow-500 text-black' :
-                index === 1 ? 'bg-gray-300 text-black' :
-                index === 2 ? 'bg-yellow-600 text-white' :
-                'bg-dark-surface text-dark-text-secondary'
-              )}>
-                {index + 1}
-              </div>
-              <div className="flex items-center space-x-1 text-dark-text-muted text-xs">
-                <span>{nft.mints}</span>
-              </div>
+            <div className={cn(
+              'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0',
+              index === 0 ? 'bg-yellow-500 text-black' :
+              index === 1 ? 'bg-gray-300 text-black' :
+              index === 2 ? 'bg-yellow-600 text-white' :
+              'bg-dark-surface text-dark-text-secondary'
+            )}>
+              {index + 1}
             </div>
 
-            {/* NFT Image - Compact */}
-            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2 flex items-center justify-center">
-              <div className="text-2xl opacity-50">🖼️</div>
+            {/* NFT Image - Small */}
+            <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="text-lg opacity-50">🖼️</div>
             </div>
 
-            {/* NFT Info - Compact */}
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium text-white group-hover:text-gradient transition-colors line-clamp-1">
-                {nft.name}
-              </h3>
-              <p className="text-dark-text-secondary text-xs line-clamp-1">
-                {nft.creator}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-brand-primary font-medium text-xs">
-                  {nft.price} ETH
-                </span>
-                <span className="text-dark-text-muted text-xs">
-                  {nft.likes}♥
-                </span>
+            {/* NFT Info - Expanded */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-white group-hover:text-gradient transition-colors truncate">
+                    {nft.name}
+                  </h3>
+                  <p className="text-dark-text-secondary text-xs truncate">
+                    {nft.creator}
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className="text-brand-primary font-medium text-sm whitespace-nowrap">
+                    {nft.price} ETH
+                  </div>
+                  <div className="text-dark-text-muted text-xs whitespace-nowrap">
+                    {nft.mints} mints • {nft.likes}♥
+                  </div>
+                </div>
               </div>
             </div>
           </Link>
         ))}
       </div>
 
-      {/* Stats Section - Compact */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-        <div className="text-center bg-dark-card rounded-lg p-4 border border-dark-border">
-          <div className="text-lg font-bold text-gradient">1.2K</div>
-          <div className="text-dark-text-secondary text-xs">NFTs</div>
-        </div>
-        <div className="text-center bg-dark-card rounded-lg p-4 border border-dark-border">
-          <div className="text-lg font-bold text-gradient">45.6K</div>
-          <div className="text-dark-text-secondary text-xs">Minted</div>
-        </div>
-        <div className="text-center bg-dark-card rounded-lg p-4 border border-dark-border">
-          <div className="text-lg font-bold text-gradient">567</div>
-          <div className="text-dark-text-secondary text-xs">Active</div>
-        </div>
-        <div className="text-center bg-dark-card rounded-lg p-4 border border-dark-border">
-          <div className="text-lg font-bold text-gradient">12.3</div>
-          <div className="text-dark-text-secondary text-xs">ETH 24h</div>
-        </div>
-      </div>
 
       {/* CTA Section - Mobile Optimized */}
       <div className="text-center bg-gradient-card rounded-xl p-6 border border-dark-border">

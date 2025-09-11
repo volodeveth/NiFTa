@@ -14,6 +14,14 @@ export const metadata: Metadata = {
   creator: 'NiFTa',
   publisher: 'NiFTa',
   metadataBase: new URL('https://nifta.fun'),
+  icons: {
+    icon: [
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.png', sizes: '16x16', type: 'image/png' },
+    ],
+    shortcut: [{ url: '/favicon.png', type: 'image/png' }],
+    apple: [{ url: '/favicon.png', sizes: '180x180', type: 'image/png' }],
+  },
   openGraph: {
     title: 'NiFTa - NFT Marketplace on Base',
     description: 'Mint and trade ERC-1155 NFTs on Base network with unique revenue sharing',
@@ -59,7 +67,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-dark-bg min-h-screen`}>
         <WalletProvider>
           <Navigation />
-          <main className="pt-16 pb-20 md:pb-0">
+          <main className="pt-16 pb-24 md:pb-8">
             {children}
           </main>
         </WalletProvider>

@@ -169,5 +169,5 @@ NEXT_PUBLIC_WC_PROJECT_ID=YourWalletConnectProjectId
 
 **Last Updated**: 2025-01-21  
 **Status**: MVP Complete 🚀  
-**Live URL**: https://nifta-c8pf4oo0a-volodeveths-projects.vercel.app  
+**Live URL**: https://nifta-ej8fbx2rm-volodeveths-projects.vercel.app  
 **Domain**: nifta.fun (to be connected)

@@ -107,10 +107,10 @@ export default function ExplorePage() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl sm:text-5xl font-bold text-gradient mb-4">
-          Explore Collections
+          Explore NFTs
         </h1>
         <p className="text-dark-text-secondary text-lg max-w-2xl mx-auto">
-          Discover all NFT collections on NiFTa - from trending drops to hidden gems
+          Discover all NFTs on NiFTa - from trending drops to hidden gems
         </p>
       </div>
 
@@ -121,7 +121,7 @@ export default function ExplorePage() {
           <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
           <input
             type="text"
-            placeholder="Search collections, creators, or addresses..."
+            placeholder="Search NFTs, creators, or addresses..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-dark-card border border-dark-border rounded-xl text-white placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
@@ -184,20 +184,20 @@ export default function ExplorePage() {
 
       {/* Results Count */}
       <div className="text-dark-text-secondary text-sm mb-6">
-        Showing {sortedCollections.length} collections
+        Showing {sortedCollections.length} NFTs
       </div>
 
-      {/* Collections Grid - Mobile Optimized */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {/* NFTs Grid - Mobile Optimized (matching sale page) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {sortedCollections.map((collection) => (
           <Link
             key={collection.id}
             href={`/collection/${collection.id}`}
-            className="group bg-dark-card rounded-lg p-4 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95"
+            className="group bg-dark-card rounded-lg p-3 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95"
           >
-            {/* Collection Image */}
-            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
-              <div className="text-4xl opacity-50">🖼️</div>
+            {/* NFT Image */}
+            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2 flex items-center justify-center relative overflow-hidden">
+              <div className="text-2xl opacity-50">🖼️</div>
               
               {/* Status Badge */}
               <div className={cn(
@@ -209,8 +209,8 @@ export default function ExplorePage() {
               </div>
             </div>
 
-            {/* Collection Info - Compact */}
-            <div className="space-y-2">
+            {/* NFT Info - Compact */}
+            <div className="space-y-1">
               <div>
                 <h3 className="text-sm font-semibold text-white group-hover:text-gradient transition-colors line-clamp-1">
                   {collection.name}
@@ -220,20 +220,19 @@ export default function ExplorePage() {
                 </p>
               </div>
 
-              {/* Stats Compact */}
-              <div className="flex items-center justify-between text-xs">
-                <div className="text-dark-text-secondary">
-                  {collection.minted}/{collection.totalSupply}
-                </div>
-                <div className="text-brand-primary font-medium">
+              <div className="flex items-center justify-between">
+                <div className="text-brand-primary font-semibold text-sm">
                   {collection.price} ETH
+                </div>
+                <div className="text-dark-text-muted text-xs">
+                  {collection.minted}/{collection.totalSupply}
                 </div>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full bg-dark-surface rounded-full h-1.5">
+              <div className="w-full bg-dark-surface rounded-full h-1">
                 <div 
-                  className="h-1.5 bg-gradient-brand rounded-full transition-all duration-500"
+                  className="h-1 bg-gradient-brand rounded-full transition-all duration-500"
                   style={{ width: `${(collection.minted / collection.totalSupply) * 100}%` }}
                 />
               </div>
@@ -261,7 +260,7 @@ export default function ExplorePage() {
       {sortedCollections.length === 0 && (
         <div className="text-center py-12">
           <div className="text-6xl mb-4 opacity-50">🔍</div>
-          <h3 className="text-xl font-semibold text-white mb-2">No collections found</h3>
+          <h3 className="text-xl font-semibold text-white mb-2">No NFTs found</h3>
           <p className="text-dark-text-secondary mb-6">
             Try adjusting your search or filters
           </p>
@@ -282,7 +281,7 @@ export default function ExplorePage() {
       {sortedCollections.length > 0 && (
         <div className="text-center mt-12">
           <button className="px-6 py-3 bg-dark-card border border-dark-border rounded-lg text-dark-text-secondary hover:text-white hover:border-brand-primary/50 transition-all">
-            Load More Collections
+            Load More NFTs
           </button>
         </div>
       )}

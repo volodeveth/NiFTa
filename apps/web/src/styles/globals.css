@@ -127,3 +127,12 @@ body {
 .dark {
   color-scheme: dark;
 }
+
+/* Mobile safe area utilities */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+.safe-area-pt {
+  padding-top: env(safe-area-inset-top, 0px);
+}
