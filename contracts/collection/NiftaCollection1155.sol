@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {ERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import {ERC1155Supply} from "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
-import {ERC2981} from "@openzeppelin/contracts/token/common/ERC2981.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {ERC1155Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
+import {ERC1155SupplyUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol";
+import {ERC2981Upgradeable} from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import {INiftaCollection} from "./INiftaCollection.sol";
 import {CommonEvents} from "../interfaces/CommonEvents.sol";
@@ -18,12 +20,14 @@ import {CommonEvents} from "../interfaces/CommonEvents.sol";
  * @dev Royalties: 2.5% to creator via ERC-2981, 2.5% platform fee handled by marketplace
  */
 contract NiftaCollection1155 is
-    ERC1155,
-    ERC1155Supply,
-    ERC2981,
-    Ownable,
-    ReentrancyGuard,
-    Pausable,
+    Initializable,
+    ERC1155Upgradeable,
+    ERC1155SupplyUpgradeable,
+    ERC2981Upgradeable,
+    OwnableUpgradeable,
+    ReentrancyGuardUpgradeable,
+    PausableUpgradeable,
+    UUPSUpgradeable,
     INiftaCollection,
     CommonEvents
 {
@@ -53,7 +57,8 @@ contract NiftaCollection1155 is
     error AlreadyInitialized();
     error ZeroAddress();
 
-    constructor() ERC1155("") {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
         _disableInitializers();
     }
 
@@ -66,14 +71,20 @@ contract NiftaCollection1155 is
     ) external override initializer {
         if (creator_ == address(0) || platformReceiver_ == address(0)) revert ZeroAddress();
 
+        __ERC1155_init(uri_);
+        __ERC1155Supply_init();
+        __ERC2981_init();
+        __Ownable_init(creator_);
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
+
         creator = creator_;
         platformReceiver = platformReceiver_;
         priceWei = priceWei_;
         maxPaidMintsTrigger = maxPaidMintsTrigger_ == 0 ? FIRST_TRIGGER : maxPaidMintsTrigger_;
 
-        _setURI(uri_);
         _setDefaultRoyalty(creator_, ROYALTY_BPS);
-        _transferOwnership(creator_);
     }
 
     function creatorFreeMint(uint256 id, uint256 amount) external override whenNotPaused nonReentrant {
@@ -109,10 +120,10 @@ contract NiftaCollection1155 is
 
         // Revenue distribution
         uint256 total = msg.value;
-        uint256 toCreator = (total * 50) / 100;
-        uint256 toFirst = (total * 10) / 100;
-        uint256 toReferral = referrer != address(0) ? (total * 20) / 100 : 0;
-        uint256 toPlatform = (total * 20) / 100 + (total * 20) / 100 - toReferral;
+        uint256 toCreator = (total * 50) / 100;        // Always 50% to creator
+        uint256 toFirst = (total * 10) / 100;          // Always 10% to first paid minter
+        uint256 toReferral = referrer != address(0) ? (total * 20) / 100 : 0;  // 20% if referrer exists
+        uint256 toPlatform = (total * 40) / 100 - toReferral;  // 40% minus referral (20% base + 20% from unused referral)
 
         claimable[creator] += toCreator;
         claimable[firstPaidMinter] += toFirst;
@@ -162,33 +173,30 @@ contract NiftaCollection1155 is
         return endTime - block.timestamp;
     }
 
+    function _authorizeUpgrade(address newImplementation) 
+        internal 
+        override 
+        onlyOwner 
+    {}
+
     // Required overrides
     function supportsInterface(bytes4 interfaceId) 
         public 
         view 
-        override(ERC1155, ERC2981) 
+        override(ERC1155Upgradeable, ERC2981Upgradeable) 
         returns (bool) 
     {
-        return ERC1155.supportsInterface(interfaceId) || ERC2981.supportsInterface(interfaceId);
+        return ERC1155Upgradeable.supportsInterface(interfaceId) || ERC2981Upgradeable.supportsInterface(interfaceId);
     }
 
     function _update(address from, address to, uint256[] memory ids, uint256[] memory values)
         internal
-        override(ERC1155, ERC1155Supply)
+        override(ERC1155Upgradeable, ERC1155SupplyUpgradeable)
         whenNotPaused
     {
         super._update(from, to, ids, values);
     }
 
-    // Disable initializer for implementation contract
-    function _disableInitializers() internal virtual {
-        // Implementation can't be initialized
-    }
-
-    modifier initializer() {
-        if (creator != address(0)) revert AlreadyInitialized();
-        _;
-    }
 
     receive() external payable {}
 }

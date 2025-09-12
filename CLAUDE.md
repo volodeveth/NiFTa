@@ -101,6 +101,9 @@ NiFTa/
 - [x] Vercel deployment (https://nifta-zeta.vercel.app)
 - [x] Mobile layout fixes and optimizations
 - [x] Z-index and navigation layering fixes
+- [x] Social media verification system (X/Twitter & Farcaster OAuth)
+- [x] Profile verification with checkmark badges
+- [x] User profile enhancement (bio, website, social links)
 - [ ] Farcaster Mini App setup
 
 ### Phase 5: Testing & Launch
@@ -179,11 +182,20 @@ npx vercel inspect [deployment-url] --logs --token=pUJUqZFTNRb0dVq5XiGANBRM
 
 ### Environment Variables
 ```
+# Base Network & Contracts
 RPC_BASE_MAINNET=https://mainnet.base.org
 PRIVATE_KEY=0xYourPrivateKeyHere
 ETHERSCAN_API_KEY=YourBaseScanAPIKey
 PLATFORM_TREASURY=0xYourPlatformAddress
+
+# Frontend & OAuth
+NEXT_PUBLIC_BASE_URL=https://nifta-zeta.vercel.app
 NEXT_PUBLIC_WC_PROJECT_ID=YourWalletConnectProjectId
+
+# Social Media OAuth
+TWITTER_CLIENT_ID=your_twitter_client_id
+TWITTER_CLIENT_SECRET=your_twitter_client_secret
+FARCASTER_CLIENT_ID=nifta
 ```
 
 ## Roadmap
@@ -192,6 +204,8 @@ NEXT_PUBLIC_WC_PROJECT_ID=YourWalletConnectProjectId
 - Core minting and trading functionality
 - Basic UI with essential pages
 - Wallet connection and Base integration
+- Social media verification system with OAuth
+- Verified profile badges and enhanced user profiles
 
 ### V1.0
 - Enhanced UI/UX with design system
@@ -236,3 +250,11 @@ NEXT_PUBLIC_WC_PROJECT_ID=YourWalletConnectProjectId
 - **Better CSS**: Added line-clamp utilities and safe area support
 - **Improved imports**: Fixed missing icons and proper error handling
 - **Clean architecture**: Separated concerns between components
+
+### Social Verification System ✅
+- **OAuth Integration**: X (Twitter) and Farcaster authentication support
+- **Secure verification flow**: State validation, PKCE, and token exchange
+- **Profile verification**: Checkmark badges for verified users
+- **Enhanced profiles**: Bio, website links, and connected social accounts display
+- **Modular components**: Reusable verification and profile edit modals
+- **API infrastructure**: RESTful endpoints for profile management and social connections

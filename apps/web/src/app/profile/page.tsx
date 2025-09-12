@@ -1,28 +1,56 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
+import { useSearchParams } from 'next/navigation'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { cn, formatAddress } from '@/lib/utils'
 import { 
   PencilIcon,
   LinkIcon,
-  ClipboardIcon
+  ClipboardIcon,
+  ShieldCheckIcon,
+  PlusIcon
 } from '@heroicons/react/24/outline'
+import { CheckBadgeIcon } from '@heroicons/react/24/solid'
+import { useProfile } from '@/hooks/useProfile'
+import SocialVerification from '@/components/ui/SocialVerification'
+import ProfileEdit from '@/components/ui/ProfileEdit'
 
 export default function ProfilePage() {
   const { address, isConnected } = useAccount()
+  const searchParams = useSearchParams()
+  const { profile, updateProfile } = useProfile()
+  
   const [activeTab, setActiveTab] = useState<'created' | 'collected'>('created')
+  const [showSocialVerification, setShowSocialVerification] = useState(false)
+  const [showProfileEdit, setShowProfileEdit] = useState(false)
   
   const mockCreated = [
-    { id: 1, name: 'My Art Collection', minted: 45, total: 100, earnings: '0.045' },
-    { id: 2, name: 'Digital Memories', minted: 78, total: 500, earnings: '0.078' },
+    { id: 1, name: 'My Art Collection', minted: 1245, triggerMints: 1000, earnings: '0.6225', timerActive: true },
+    { id: 2, name: 'Digital Memories', minted: 678, triggerMints: 1000, earnings: '0.339', timerActive: false },
   ]
   
   const mockCollected = [
     { id: 1, name: 'Quantum Pattern #042', collection: 'Quantum Art', owned: 1 },
     { id: 2, name: 'Cyber Pet #156', collection: 'Digital Pets', owned: 2 },
   ]
+
+  // Handle OAuth callback
+  useEffect(() => {
+    const socialConnected = searchParams?.get('social_connected')
+    const provider = searchParams?.get('provider')
+    const socialData = searchParams?.get('social_data')
+    
+    if (socialConnected === 'true' && socialData) {
+      try {
+        const connectionData = JSON.parse(decodeURIComponent(socialData))
+        updateProfile({ socialConnection: connectionData })
+      } catch (error) {
+        console.error('Failed to process social connection:', error)
+      }
+    }
+  }, [searchParams, updateProfile])
 
   if (!isConnected) {
     return (
@@ -51,18 +79,48 @@ export default function ProfilePage() {
               </span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white mb-1">
-                {formatAddress(address!)}
-              </h1>
+              <div className="flex items-center space-x-2 mb-1">
+                <h1 className="text-xl font-bold text-white">
+                  {formatAddress(address!)}
+                </h1>
+                {profile?.isVerified && (
+                  <CheckBadgeIcon className="w-5 h-5 text-brand-primary" title="Verified Profile" />
+                )}
+              </div>
               <p className="text-dark-text-secondary text-sm">
-                NFT Creator & Collector
+                {profile?.bio || 'NFT Creator & Collector'}
               </p>
+              {profile?.website && (
+                <a
+                  href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-1 text-brand-primary hover:text-brand-secondary transition-colors text-sm mt-1"
+                >
+                  <LinkIcon className="w-3 h-3" />
+                  <span className="truncate max-w-[200px]">{profile.website.replace(/^https?:\/\//, '')}</span>
+                </a>
+              )}
             </div>
           </div>
-          <button className="flex items-center space-x-2 px-3 py-2 bg-dark-surface border border-dark-border rounded-lg text-dark-text-secondary hover:text-white hover:border-brand-primary/50 transition-all text-sm">
-            <PencilIcon className="w-4 h-4" />
-            <span className="hidden sm:inline">Edit</span>
-          </button>
+          <div className="flex items-center space-x-2">
+            {!profile?.isVerified && (
+              <button
+                onClick={() => setShowSocialVerification(true)}
+                className="flex items-center space-x-2 px-3 py-2 bg-brand-primary/10 border border-brand-primary/20 rounded-lg text-brand-primary hover:bg-brand-primary/20 transition-all text-sm"
+              >
+                <ShieldCheckIcon className="w-4 h-4" />
+                <span className="hidden sm:inline">Verify</span>
+              </button>
+            )}
+            <button
+              onClick={() => setShowProfileEdit(true)}
+              className="flex items-center space-x-2 px-3 py-2 bg-dark-surface border border-dark-border rounded-lg text-dark-text-secondary hover:text-white hover:border-brand-primary/50 transition-all text-sm"
+            >
+              <PencilIcon className="w-4 h-4" />
+              <span className="hidden sm:inline">Edit</span>
+            </button>
+          </div>
         </div>
 
         {/* Wallet Address - Mobile Compact */}
@@ -80,6 +138,38 @@ export default function ProfilePage() {
             </button>
           </div>
         </div>
+
+        {/* Social Connections */}
+        {profile?.socialConnections && profile.socialConnections.length > 0 && (
+          <div className="mb-4">
+            <h3 className="text-dark-text-muted text-xs mb-2">Connected Accounts</h3>
+            <div className="flex items-center space-x-2">
+              {profile.socialConnections.map((connection) => (
+                <a
+                  key={connection.provider}
+                  href={connection.provider === 'twitter' 
+                    ? `https://twitter.com/${connection.username}` 
+                    : `https://warpcast.com/${connection.username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-2 px-3 py-2 bg-dark-surface border border-dark-border rounded-lg hover:border-brand-primary/50 transition-colors"
+                >
+                  <div className={cn(
+                    "w-4 h-4 rounded flex items-center justify-center",
+                    connection.provider === 'twitter' ? "bg-black" : "bg-purple-600"
+                  )}>
+                    <span className="text-white font-bold text-xs">
+                      {connection.provider === 'twitter' ? '𝕏' : 'FC'}
+                    </span>
+                  </div>
+                  <span className="text-dark-text-secondary text-xs">
+                    @{connection.username}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Stats - Mobile Compact */}
         <div className="grid grid-cols-3 gap-3">
@@ -142,7 +232,8 @@ export default function ProfilePage() {
                   <div className="min-w-0 flex-1">
                     <h3 className="text-base font-semibold text-white line-clamp-1">{collection.name}</h3>
                     <p className="text-dark-text-secondary text-sm">
-                      {collection.minted}/{collection.total} minted
+                      {collection.minted.toLocaleString()} minted
+                      {collection.timerActive ? ' • Timer Active' : ''}
                     </p>
                   </div>
                 </div>
@@ -155,10 +246,14 @@ export default function ProfilePage() {
               </div>
               
               <div className="mt-3 w-full bg-dark-surface rounded-full h-1.5">
-                <div 
-                  className="h-1.5 bg-gradient-brand rounded-full transition-all duration-500"
-                  style={{ width: `${(collection.minted / collection.total) * 100}%` }}
-                />
+                {collection.minted < collection.triggerMints ? (
+                  <div 
+                    className="h-1.5 bg-gradient-brand rounded-full transition-all duration-500"
+                    style={{ width: `${(collection.minted / collection.triggerMints) * 100}%` }}
+                  />
+                ) : (
+                  <div className="h-1.5 bg-gradient-to-r from-yellow-500 to-red-500 rounded-full" />
+                )}
               </div>
             </div>
           ))}
@@ -216,6 +311,15 @@ export default function ProfilePage() {
             Explore Marketplace
           </button>
         </div>
+      )}
+
+      {/* Modals */}
+      {showSocialVerification && (
+        <SocialVerification onClose={() => setShowSocialVerification(false)} />
+      )}
+      
+      {showProfileEdit && (
+        <ProfileEdit onClose={() => setShowProfileEdit(false)} />
       )}
     </div>
   )

@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import {IERC2981} from "@openzeppelin/contracts/interfaces/IERC2981.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {IERC1155Receiver} from "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import {CommonEvents} from "../interfaces/CommonEvents.sol";
 
@@ -16,9 +18,11 @@ import {CommonEvents} from "../interfaces/CommonEvents.sol";
  * @dev 95% to seller, 2.5% creator royalty, 2.5% platform fee
  */
 contract NiftaMarketplace is 
-    ReentrancyGuard,
-    Pausable,
-    Ownable,
+    Initializable,
+    ReentrancyGuardUpgradeable,
+    PausableUpgradeable,
+    OwnableUpgradeable,
+    UUPSUpgradeable,
     IERC1155Receiver,
     CommonEvents
 {
@@ -52,8 +56,19 @@ contract NiftaMarketplace is
     error TransferFailed();
     error ListingNotFound();
 
-    constructor(address platformReceiver_) Ownable(msg.sender) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address platformReceiver_) external initializer {
         if (platformReceiver_ == address(0)) revert ZeroAddress();
+        
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        __Ownable_init(msg.sender);
+        __UUPSUpgradeable_init();
+        
         platformReceiver = platformReceiver_;
     }
 
@@ -311,6 +326,12 @@ contract NiftaMarketplace is
     ) external pure override returns (bytes4) {
         return this.onERC1155BatchReceived.selector;
     }
+
+    function _authorizeUpgrade(address newImplementation) 
+        internal 
+        override 
+        onlyOwner 
+    {}
 
     function supportsInterface(bytes4 interfaceId) 
         external 

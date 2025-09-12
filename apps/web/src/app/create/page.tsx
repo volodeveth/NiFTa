@@ -21,11 +21,9 @@ export default function CreatePage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    collection: '',
     file: null as File | null,
     filePreview: '',
     fileType: '',
-    customPrice: '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -92,19 +90,11 @@ export default function CreatePage() {
       newErrors.name = 'Name must be at least 3 characters'
     }
 
-    if (!formData.description.trim()) {
-      newErrors.description = 'Description is required'
-    } else if (formData.description.length < 10) {
-      newErrors.description = 'Description must be at least 10 characters'
-    }
 
     if (!formData.file) {
       newErrors.file = 'Media file is required'
     }
 
-    if (formData.customPrice && parseFloat(formData.customPrice) <= 0) {
-      newErrors.customPrice = 'Price must be greater than 0'
-    }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -123,8 +113,10 @@ export default function CreatePage() {
     e.preventDefault()
     if (!validateForm()) return
 
-    // In MVP, we'll just simulate the transaction
-    // In production, this would upload to IPFS and mint the NFT
+    // In production, this would:
+    // 1. Upload media to IPFS
+    // 2. Create collection via Factory with NFT name (for OpenSea compatibility)
+    // 3. Mint first NFT (creator free mint) 
     console.log('Creating NFT with data:', formData)
     
     // Simulate success for MVP
@@ -207,7 +199,7 @@ export default function CreatePage() {
       {/* Step Content */}
       {currentStep === 1 && (
         <div className="bg-dark-card rounded-xl p-6 border border-dark-border">
-          <form onSubmit={(e) => { e.preventDefault(); setCurrentStep(2) }} className="space-y-6">
+          <form onSubmit={(e) => { e.preventDefault(); if (validateForm()) setCurrentStep(2) }} className="space-y-6">
             {/* NFT Name */}
             <div>
               <label className="block text-white font-medium mb-2">
@@ -231,27 +223,11 @@ export default function CreatePage() {
               )}
             </div>
 
-            {/* Collection (Optional) */}
-            <div>
-              <label className="block text-white font-medium mb-2">
-                Collection (Optional)
-              </label>
-              <input
-                type="text"
-                value={formData.collection}
-                onChange={(e) => handleInputChange('collection', e.target.value)}
-                placeholder="Leave empty to create collection from NFT name"
-                className="w-full px-4 py-3 bg-dark-surface border border-dark-border rounded-lg text-white placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              />
-              <p className="mt-1 text-dark-text-muted text-xs">
-                If left empty, collection will be created with the same name as your NFT
-              </p>
-            </div>
 
             {/* Description */}
             <div>
               <label className="block text-white font-medium mb-2">
-                Description *
+                Description (Optional)
               </label>
               <textarea
                 value={formData.description}
@@ -355,35 +331,43 @@ export default function CreatePage() {
               )}
             </div>
 
-            {/* Pricing */}
+            {/* Pricing Info */}
             <div className="border-t border-dark-border pt-6">
               <h3 className="text-white font-medium mb-4 flex items-center">
-                Pricing
+                Pricing & Revenue
                 <InformationCircleIcon className="w-4 h-4 ml-2 text-dark-text-muted" />
               </h3>
               
-              <div>
-                <label className="block text-dark-text-secondary font-medium mb-2">
-                  Mint Price (ETH)
-                </label>
-                <input
-                  type="number"
-                  step="0.0001"
-                  min="0"
-                  value={formData.customPrice}
-                  onChange={(e) => handleInputChange('customPrice', e.target.value)}
-                  placeholder="0.0001 (default)"
-                  className={cn(
-                    'w-full px-4 py-3 bg-dark-surface border rounded-lg text-white placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-brand-primary',
-                    errors.customPrice ? 'border-red-500' : 'border-dark-border'
-                  )}
-                />
-                {errors.customPrice && (
-                  <p className="mt-1 text-red-400 text-sm">{errors.customPrice}</p>
-                )}
-                <p className="mt-1 text-dark-text-muted text-xs">
-                  Revenue: 50% Creator, 10% First Minter, 20% Referral, 20% Platform
-                </p>
+              <div className="bg-dark-surface rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-dark-text-secondary">Default mint price:</span>
+                  <span className="text-white font-medium">0.0001 ETH</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-dark-text-secondary">Creator first mint:</span>
+                  <span className="text-green-400 font-medium">Free (gas only)</span>
+                </div>
+                <div className="border-t border-dark-border pt-3">
+                  <p className="text-dark-text-muted text-xs mb-2">Revenue Distribution:</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-dark-text-secondary">Creator:</span>
+                      <span className="text-brand-primary font-medium">50%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-dark-text-secondary">First Minter:</span>
+                      <span className="text-brand-primary font-medium">10%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-dark-text-secondary">Referral:</span>
+                      <span className="text-brand-primary font-medium">20%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-dark-text-secondary">Platform:</span>
+                      <span className="text-brand-primary font-medium">20%</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -413,26 +397,22 @@ export default function CreatePage() {
                     <span className="text-white ml-2">{formData.name}</span>
                   </div>
                   <div>
-                    <span className="text-dark-text-secondary">Collection:</span>
-                    <span className="text-white ml-2">
-                      {formData.collection || formData.name}
-                    </span>
-                  </div>
-                  <div>
                     <span className="text-dark-text-secondary">Description:</span>
                     <p className="text-white mt-1">{formData.description}</p>
                   </div>
                   <div>
                     <span className="text-dark-text-secondary">Mint Price:</span>
-                    <span className="text-white ml-2">
-                      {formData.customPrice || '0.0001'} ETH
-                    </span>
+                    <span className="text-white ml-2">0.0001 ETH (default)</span>
                   </div>
                   <div>
                     <span className="text-dark-text-secondary">File Type:</span>
                     <span className="text-white ml-2 capitalize">
                       {formData.fileType} ({formData.file ? (formData.file.size / (1024 * 1024)).toFixed(2) + ' MB' : ''})
                     </span>
+                  </div>
+                  <div>
+                    <span className="text-dark-text-secondary">Creator Mint:</span>
+                    <span className="text-green-400 ml-2">Free (gas only)</span>
                   </div>
                 </div>
               </div>
@@ -515,7 +495,7 @@ export default function CreatePage() {
       {currentStep === 3 && (
         <div className="bg-dark-card rounded-xl p-6 border border-dark-border text-center">
           <div className="text-6xl mb-6">🎉</div>
-          <h2 className="text-3xl font-bold text-gradient mb-4">NFT Minted!</h2>
+          <h2 className="text-3xl font-bold text-gradient mb-4">NFT Created!</h2>
           <p className="text-dark-text-secondary mb-8 max-w-md mx-auto">
             Your NFT has been successfully minted on Base network
           </p>
@@ -527,7 +507,7 @@ export default function CreatePage() {
             <button 
               onClick={() => {
                 setCurrentStep(1)
-                setFormData({ name: '', description: '', collection: '', file: null, filePreview: '', fileType: '', customPrice: '' })
+                setFormData({ name: '', description: '', file: null, filePreview: '', fileType: '' })
                 setErrors({})
               }}
               className="w-full bg-dark-surface text-white py-3 px-6 rounded-lg font-medium border border-dark-border hover:bg-dark-border transition-colors"

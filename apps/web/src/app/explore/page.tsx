@@ -15,8 +15,8 @@ const mockCollections = [
     description: 'Abstract digital art exploring quantum mechanics through visual patterns',
     image: '/api/placeholder/300/300',
     price: '0.0001',
-    minted: 234,
-    totalSupply: 1000,
+    minted: 1234, // Past 1000 trigger, timer active
+    triggerMints: 1000,
     endTime: Math.floor(Date.now() / 1000) + 3600, // 1 hour from now
     createdAt: Math.floor(Date.now() / 1000) - 7200, // 2 hours ago
     isActive: true,
@@ -30,9 +30,9 @@ const mockCollections = [
     description: 'Cute digital pets living in the metaverse',
     image: '/api/placeholder/300/300',
     price: '0.0001',
-    minted: 567,
-    totalSupply: 1000,
-    endTime: 0, // No end time yet
+    minted: 567, // Before trigger
+    triggerMints: 1000,
+    endTime: 0, // No timer yet
     createdAt: Math.floor(Date.now() / 1000) - 14400, // 4 hours ago
     isActive: true,
     category: 'Gaming'
@@ -45,8 +45,8 @@ const mockCollections = [
     description: 'Celebrating builders on Base network',
     image: '/api/placeholder/300/300',
     price: '0.0001',
-    minted: 1000,
-    totalSupply: 1000,
+    minted: 2567, // Timer ended, high mint count
+    triggerMints: 1000,
     endTime: Math.floor(Date.now() / 1000) - 3600, // Ended 1 hour ago
     createdAt: Math.floor(Date.now() / 1000) - 86400, // 1 day ago
     isActive: false,
@@ -60,9 +60,9 @@ const mockCollections = [
     description: 'Interactive frames for Farcaster ecosystem',
     image: '/api/placeholder/300/300',
     price: '0.0001',
-    minted: 156,
-    totalSupply: 500,
-    endTime: Math.floor(Date.now() / 1000) + 86400, // 1 day from now
+    minted: 156, // Early stage
+    triggerMints: 1000,
+    endTime: 0, // No timer yet
     createdAt: Math.floor(Date.now() / 1000) - 1800, // 30 minutes ago
     isActive: true,
     category: 'Social'
@@ -225,17 +225,22 @@ export default function ExplorePage() {
                   {collection.price} ETH
                 </div>
                 <div className="text-dark-text-muted text-xs">
-                  {collection.minted}/{collection.totalSupply}
+                  {collection.minted.toLocaleString()} minted
                 </div>
               </div>
 
-              {/* Progress Bar */}
-              <div className="w-full bg-dark-surface rounded-full h-1">
-                <div 
-                  className="h-1 bg-gradient-brand rounded-full transition-all duration-500"
-                  style={{ width: `${(collection.minted / collection.totalSupply) * 100}%` }}
-                />
-              </div>
+              {/* Progress Bar - to trigger only */}
+              {collection.minted < collection.triggerMints && (
+                <div className="w-full bg-dark-surface rounded-full h-1">
+                  <div 
+                    className="h-1 bg-gradient-brand rounded-full transition-all duration-500"
+                    style={{ width: `${(collection.minted / collection.triggerMints) * 100}%` }}
+                  />
+                </div>
+              )}
+              {collection.minted >= collection.triggerMints && (
+                <div className="w-full bg-gradient-to-r from-yellow-500 to-red-500 rounded-full h-1" />
+              )}
 
               {/* Status */}
               <div className="flex items-center justify-between text-xs">
@@ -243,11 +248,19 @@ export default function ExplorePage() {
                   'font-medium',
                   collection.isActive ? 'text-green-400' : 'text-red-400'
                 )}>
-                  {collection.isActive ? 'Active' : 'Ended'}
+                  {collection.isActive 
+                    ? (collection.endTime > 0 ? 'Timer Active' : 'Unlimited') 
+                    : 'Ended'
+                  }
                 </div>
                 {collection.endTime > 0 && collection.isActive && (
                   <div className="text-yellow-400 font-medium">
                     {Math.max(0, Math.floor((collection.endTime - Date.now() / 1000) / 3600))}h left
+                  </div>
+                )}
+                {collection.minted >= collection.triggerMints && collection.endTime === 0 && (
+                  <div className="text-orange-400 font-medium">
+                    Trigger reached
                   </div>
                 )}
               </div>
