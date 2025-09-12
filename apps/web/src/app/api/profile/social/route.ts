@@ -32,9 +32,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Wallet address required' }, { status: 400 })
   }
 
-  const profile = profileStore.get(walletAddress.toLowerCase()) || {
+  const profile: ProfileData = profileStore.get(walletAddress.toLowerCase()) || {
     walletAddress: walletAddress.toLowerCase(),
-    socialConnections: [],
+    socialConnections: [] as SocialConnection[],
     isVerified: false
   }
 
@@ -51,9 +51,9 @@ export async function POST(request: NextRequest) {
     }
 
     const normalizedAddress = walletAddress.toLowerCase()
-    const existingProfile = profileStore.get(normalizedAddress) || {
+    const existingProfile: ProfileData = profileStore.get(normalizedAddress) || {
       walletAddress: normalizedAddress,
-      socialConnections: [],
+      socialConnections: [] as SocialConnection[],
       isVerified: false
     }
 
@@ -64,9 +64,9 @@ export async function POST(request: NextRequest) {
       )
 
       if (existingIndex >= 0) {
-        existingProfile.socialConnections[existingIndex] = socialConnection as SocialConnection
+        existingProfile.socialConnections[existingIndex] = socialConnection
       } else {
-        existingProfile.socialConnections.push(socialConnection as SocialConnection)
+        existingProfile.socialConnections.push(socialConnection)
       }
 
       // Mark as verified if has any social connection
