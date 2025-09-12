@@ -64,9 +64,9 @@ export async function POST(request: NextRequest) {
       )
 
       if (existingIndex >= 0) {
-        existingProfile.socialConnections[existingIndex] = socialConnection
+        existingProfile.socialConnections[existingIndex] = socialConnection as SocialConnection
       } else {
-        existingProfile.socialConnections.push(socialConnection)
+        existingProfile.socialConnections.push(socialConnection as SocialConnection)
       }
 
       // Mark as verified if has any social connection
