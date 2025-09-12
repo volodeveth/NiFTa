@@ -52,11 +52,12 @@ export async function GET(
   const config = OAUTH_CONFIGS[provider as keyof typeof OAUTH_CONFIGS]
 
   if (provider === 'twitter') {
+    const twitterConfig = config as typeof OAUTH_CONFIGS.twitter
     const params = new URLSearchParams({
       response_type: 'code',
-      client_id: config.clientId!,
-      redirect_uri: config.redirectUri,
-      scope: config.scope!,
+      client_id: twitterConfig.clientId!,
+      redirect_uri: twitterConfig.redirectUri,
+      scope: twitterConfig.scope!,
       state,
       code_challenge: generatePKCE(),
       code_challenge_method: 'S256'
