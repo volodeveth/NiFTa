@@ -77,9 +77,9 @@ export default function TrendingPage() {
   const currentData = mockTrendingData[activeFilter]
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
       {/* Header */}
-      <div className="text-center mb-6">
+      <div className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-gradient mb-2">
           Trending on NiFTa
         </h1>
