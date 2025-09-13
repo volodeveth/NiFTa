@@ -40,8 +40,20 @@ const SOCIAL_PLATFORMS = {
 export default function ShareButton({ nftId, nftName, className, compact = false }: ShareButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const { address } = useAccount()
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Check if mobile on mount and window resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < (compact ? 640 : 768))
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [compact])
 
   // Generate referral URL - ЗАВЖДИ з реферальним посиланням якщо користувач підключений
   const generateShareUrl = () => {
@@ -124,7 +136,10 @@ export default function ShareButton({ nftId, nftName, className, compact = false
 
         {/* Compact Dropdown */}
         {isOpen && (
-          <div className="absolute top-full right-0 mt-2 bg-dark-card border border-dark-border rounded-lg shadow-xl z-50 min-w-[180px]">
+          <div className={cn(
+            "absolute top-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-xl z-50 min-w-[180px]",
+            isMobile ? "left-1/2 transform -translate-x-1/2" : "right-0"
+          )}>
             <div className="p-2 space-y-1">
               {/* Social platforms */}
               {Object.entries(SOCIAL_PLATFORMS).map(([key, platform]) => (
@@ -178,7 +193,10 @@ export default function ShareButton({ nftId, nftName, className, compact = false
 
       {/* Full Dropdown */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 bg-dark-card border border-dark-border rounded-xl shadow-xl z-50 min-w-[280px]">
+        <div className={cn(
+          "absolute top-full mt-2 bg-dark-card border border-dark-border rounded-xl shadow-xl z-50 min-w-[280px] max-w-[90vw]",
+          isMobile ? "left-1/2 transform -translate-x-1/2" : "right-0"
+        )}>
           <div className="p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
