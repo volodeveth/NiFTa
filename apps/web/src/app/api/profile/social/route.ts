@@ -13,6 +13,8 @@ export interface SocialConnection {
 
 export interface ProfileData {
   walletAddress: string
+  nickname?: string
+  name?: string
   website?: string
   bio?: string
   socialConnections: SocialConnection[]
@@ -44,7 +46,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { walletAddress, socialConnection, website, bio } = body
+    const { walletAddress, socialConnection, website, bio, nickname, name } = body
 
     if (!walletAddress) {
       return NextResponse.json({ error: 'Wallet address required' }, { status: 400 })
@@ -77,6 +79,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Update other profile data
+    if (nickname !== undefined) {
+      existingProfile.nickname = nickname
+    }
+    
+    if (name !== undefined) {
+      existingProfile.name = name
+    }
+    
     if (website !== undefined) {
       existingProfile.website = website
     }

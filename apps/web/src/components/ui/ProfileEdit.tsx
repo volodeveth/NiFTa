@@ -5,7 +5,9 @@ import { useProfile } from '@/hooks/useProfile'
 import { 
   XMarkIcon,
   LinkIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  UserIcon,
+  IdentificationIcon
 } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +19,8 @@ export default function ProfileEdit({ onClose }: ProfileEditProps) {
   const { profile, updateProfile, loading } = useProfile()
   
   const [formData, setFormData] = useState({
+    nickname: profile?.nickname || '',
+    name: profile?.name || '',
     website: profile?.website || '',
     bio: profile?.bio || ''
   })
@@ -83,6 +87,48 @@ export default function ProfileEdit({ onClose }: ProfileEditProps) {
             >
               <XMarkIcon className="w-5 h-5 text-dark-text-secondary" />
             </button>
+          </div>
+
+          {/* Nickname Field */}
+          <div className="mb-6">
+            <label className="block text-white font-medium mb-2 text-sm">
+              Nickname
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.nickname}
+                onChange={(e) => handleInputChange('nickname', e.target.value)}
+                placeholder="Your nickname or handle"
+                maxLength={20}
+                className="w-full px-4 py-3 bg-dark-surface border border-dark-border rounded-lg text-white placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary transition-all pl-10"
+              />
+              <UserIcon className="absolute left-3 top-3.5 w-4 h-4 text-dark-text-muted" />
+            </div>
+            <p className="text-dark-text-muted text-xs mt-1">
+              How you'd like to be known in the community
+            </p>
+          </div>
+
+          {/* Name Field */}
+          <div className="mb-6">
+            <label className="block text-white font-medium mb-2 text-sm">
+              Full Name
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                placeholder="Your full name"
+                maxLength={50}
+                className="w-full px-4 py-3 bg-dark-surface border border-dark-border rounded-lg text-white placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary transition-all pl-10"
+              />
+              <IdentificationIcon className="absolute left-3 top-3.5 w-4 h-4 text-dark-text-muted" />
+            </div>
+            <p className="text-dark-text-muted text-xs mt-1">
+              Your real name (optional, for verification purposes)
+            </p>
           </div>
 
           {/* Website Field */}

@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useAccount } from 'wagmi'
 import { useSearchParams } from 'next/navigation'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { cn, formatAddress } from '@/lib/utils'
+import { cn, formatAddress, getUserDisplayName, getUserInitials } from '@/lib/utils'
 import { 
   PencilIcon,
   LinkIcon,
@@ -75,18 +75,23 @@ function ProfileContent() {
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-brand rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-lg">
-                {address?.slice(2, 4).toUpperCase()}
+                {getUserInitials(profile, address)}
               </span>
             </div>
             <div>
               <div className="flex items-center space-x-2 mb-1">
                 <h1 className="text-xl font-bold text-white">
-                  {formatAddress(address!)}
+                  {getUserDisplayName(profile, address)}
                 </h1>
                 {profile?.isVerified && (
                   <CheckBadgeIcon className="w-5 h-5 text-brand-primary" title="Verified Profile" />
                 )}
               </div>
+              {(profile?.nickname || profile?.name) && (
+                <p className="text-dark-text-muted text-xs font-mono">
+                  {formatAddress(address!)}
+                </p>
+              )}
               <p className="text-dark-text-secondary text-sm">
                 {profile?.bio || 'NFT Creator & Collector'}
               </p>

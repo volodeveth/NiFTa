@@ -224,9 +224,9 @@ FARCASTER_CLIENT_ID=nifta
 
 ---
 
-**Last Updated**: 2025-09-12  
+**Last Updated**: 2025-09-13  
 **Status**: MVP Complete 🚀  
-**Live URL**: https://nifta-f4bag3g1m-volodeveths-projects.vercel.app  
+**Live URL**: https://nifta-jcofyvhhp-volodeveths-projects.vercel.app  
 **GitHub**: https://github.com/volodeveth/NiFTa  
 **Domain**: nifta.fun (to be connected)
 
@@ -272,3 +272,15 @@ FARCASTER_CLIENT_ID=nifta
 - **Crypto Module**: Resolved ES6 import issues for Next.js compatibility
 - **Suspense Boundaries**: Fixed useSearchParams SSR errors with proper React Suspense
 - **State Management**: Secure OAuth state validation with cookie-based session handling
+
+### Social Media Sharing System (September 2025) ✅
+- **ShareButton Component**: Unified sharing component with compact and full versions
+- **X (Twitter) Integration**: Direct tweet composition with pre-filled NFT information
+- **Farcaster Support**: Native Warpcast compose integration for Web3 social sharing
+- **Referral System**: Automatic referral link generation with wallet address tracking
+- **Revenue Sharing**: 20% referral rewards automatically included in shared links
+- **Mobile Modals**: True centered modals with overlay background on mobile devices
+- **Responsive Design**: Desktop dropdown positioning with mobile modal behavior
+- **Copy to Clipboard**: Direct link copying with referral parameters included
+- **Strategic Placement**: Share buttons in NFT headers and card overlays for optimal accessibility
+- **Viral Mechanics**: Built-in referral tracking encourages organic growth through social sharing
