@@ -92,7 +92,7 @@ export default function ShareButton({ nftId, nftName, className, compact = false
     }
   }
 
-  // Share to social platform - URL вже містить реферальне посилання
+  // Share to social platform - URL вже містить реферальне посилання!
   const handleSocialShare = (platform: keyof typeof SOCIAL_PLATFORMS) => {
     const config = SOCIAL_PLATFORMS[platform]
     const shareUrl = generateShareUrl() // Вже з реферальним посиланням!
@@ -145,7 +145,7 @@ export default function ShareButton({ nftId, nftName, className, compact = false
           <ShareIcon className="w-4 h-4 text-white" />
         </button>
 
-        {/* Compact Dropdown */}
+        {/* Compact Modal/Dropdown */}
         {isOpen && (
           <>
             {/* Mobile Overlay */}
@@ -156,7 +156,7 @@ export default function ShareButton({ nftId, nftName, className, compact = false
               />
             )}
             
-            {/* Dropdown Content */}
+            {/* Content */}
             <div className={cn(
               "z-50 bg-dark-card border border-dark-border rounded-lg shadow-xl min-w-[180px]",
               isMobile 
@@ -164,38 +164,38 @@ export default function ShareButton({ nftId, nftName, className, compact = false
                 : "absolute top-full right-0 mt-2"
             )}>
               <div className="p-2 space-y-1">
-              {/* Social platforms */}
-              {Object.entries(SOCIAL_PLATFORMS).map(([key, platform]) => (
+                {/* Social platforms */}
+                {Object.entries(SOCIAL_PLATFORMS).map(([key, platform]) => (
+                  <button
+                    key={key}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      handleSocialShare(key as keyof typeof SOCIAL_PLATFORMS)
+                    }}
+                    className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-dark-text-secondary hover:text-white hover:bg-dark-surface rounded-lg transition-colors"
+                  >
+                    <span className="text-lg">{platform.icon}</span>
+                    <span>{platform.name}</span>
+                  </button>
+                ))}
+                
+                {/* Copy link */}
                 <button
-                  key={key}
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    handleSocialShare(key as keyof typeof SOCIAL_PLATFORMS)
+                    handleCopyLink()
                   }}
                   className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-dark-text-secondary hover:text-white hover:bg-dark-surface rounded-lg transition-colors"
                 >
-                  <span className="text-lg">{platform.icon}</span>
-                  <span>{platform.name}</span>
+                  {copied ? (
+                    <CheckIcon className="w-4 h-4 text-green-400" />
+                  ) : (
+                    <ClipboardIcon className="w-4 h-4" />
+                  )}
+                  <span>{copied ? 'Copied!' : 'Copy Link'}</span>
                 </button>
-              ))}
-              
-              {/* Copy link */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleCopyLink()
-                }}
-                className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-dark-text-secondary hover:text-white hover:bg-dark-surface rounded-lg transition-colors"
-              >
-                {copied ? (
-                  <CheckIcon className="w-4 h-4 text-green-400" />
-                ) : (
-                  <ClipboardIcon className="w-4 h-4" />
-                )}
-                <span>{copied ? 'Copied!' : 'Copy Link'}</span>
-              </button>
               </div>
             </div>
           </>
@@ -215,7 +215,7 @@ export default function ShareButton({ nftId, nftName, className, compact = false
         <span>Share</span>
       </button>
 
-      {/* Full Dropdown */}
+      {/* Full Modal/Dropdown */}
       {isOpen && (
         <>
           {/* Mobile Overlay */}
@@ -226,103 +226,104 @@ export default function ShareButton({ nftId, nftName, className, compact = false
             />
           )}
           
-          {/* Dropdown Content */}
+          {/* Content */}
           <div className={cn(
             "z-50 bg-dark-card border border-dark-border rounded-xl shadow-xl min-w-[280px] max-w-[90vw]",
             isMobile 
               ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
               : "absolute top-full right-0 mt-2"
           )}>
-          <div className="p-4">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-medium">Share NFT</h3>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-1 text-dark-text-muted hover:text-white transition-colors"
-              >
-                <XMarkIcon className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Referral Info */}
-            {address && (
-              <div className="mb-4 p-3 bg-brand-primary/10 border border-brand-primary/20 rounded-lg">
-                <div className="text-sm text-brand-primary font-medium mb-1">
-                  🎯 Referral Active
-                </div>
-                <div className="text-xs text-brand-primary/80">
-                  Your referral link will be included in all shares - earn 20% from mints!
-                </div>
-              </div>
-            )}
-
-            {/* No wallet connected info */}
-            {!address && (
-              <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                <div className="text-sm text-yellow-400 font-medium mb-1">
-                  💡 Connect Wallet
-                </div>
-                <div className="text-xs text-yellow-400/80">
-                  Connect your wallet to earn 20% referral rewards from shared links
-                </div>
-              </div>
-            )}
-
-            {/* Social Platforms */}
-            <div className="space-y-2 mb-4">
-              <div className="text-sm text-dark-text-secondary mb-2">Share on Social</div>
-              {Object.entries(SOCIAL_PLATFORMS).map(([key, platform]) => (
+            <div className="p-4">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-white font-medium">Share NFT</h3>
                 <button
-                  key={key}
-                  onClick={() => handleSocialShare(key as keyof typeof SOCIAL_PLATFORMS)}
-                  className="w-full flex items-center space-x-3 px-3 py-3 text-dark-text-secondary hover:text-white hover:bg-dark-surface rounded-lg transition-colors"
+                  onClick={() => setIsOpen(false)}
+                  className="p-1 text-dark-text-muted hover:text-white transition-colors"
                 >
-                  <span className="text-xl">{platform.icon}</span>
-                  <div className="flex-1 text-left">
-                    <div className="font-medium">{platform.name}</div>
-                    {address && (
-                      <div className="text-xs text-brand-primary/60">with referral link</div>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {/* Copy Link Section */}
-            <div className="border-t border-dark-border pt-4">
-              <div className="text-sm text-dark-text-secondary mb-2">Direct Link</div>
-              <div className="flex items-center space-x-2">
-                <div className="flex-1 px-3 py-2 bg-dark-surface border border-dark-border rounded-lg text-sm text-dark-text-muted truncate">
-                  {generateShareUrl()}
-                </div>
-                <button
-                  onClick={handleCopyLink}
-                  className={cn(
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
-                    copied
-                      ? 'bg-green-500/20 text-green-400 border border-green-500/20'
-                      : 'bg-brand-primary text-white hover:opacity-90'
-                  )}
-                >
-                  {copied ? (
-                    <div className="flex items-center space-x-1">
-                      <CheckIcon className="w-4 h-4" />
-                      <span>Copied</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-1">
-                      <ClipboardIcon className="w-4 h-4" />
-                      <span>Copy</span>
-                    </div>
-                  )}
+                  <XMarkIcon className="w-4 h-4" />
                 </button>
               </div>
+
+              {/* Referral Info */}
               {address && (
-                <div className="text-xs text-brand-primary/60 mt-1">
-                  ✓ Includes your referral code
+                <div className="mb-4 p-3 bg-brand-primary/10 border border-brand-primary/20 rounded-lg">
+                  <div className="text-sm text-brand-primary font-medium mb-1">
+                    🎯 Referral Active
+                  </div>
+                  <div className="text-xs text-brand-primary/80">
+                    Your referral link will be included in all shares - earn 20% from mints!
+                  </div>
                 </div>
               )}
+
+              {/* No wallet connected info */}
+              {!address && (
+                <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                  <div className="text-sm text-yellow-400 font-medium mb-1">
+                    💡 Connect Wallet
+                  </div>
+                  <div className="text-xs text-yellow-400/80">
+                    Connect your wallet to earn 20% referral rewards from shared links
+                  </div>
+                </div>
+              )}
+
+              {/* Social Platforms */}
+              <div className="space-y-2 mb-4">
+                <div className="text-sm text-dark-text-secondary mb-2">Share on Social</div>
+                {Object.entries(SOCIAL_PLATFORMS).map(([key, platform]) => (
+                  <button
+                    key={key}
+                    onClick={() => handleSocialShare(key as keyof typeof SOCIAL_PLATFORMS)}
+                    className="w-full flex items-center space-x-3 px-3 py-3 text-dark-text-secondary hover:text-white hover:bg-dark-surface rounded-lg transition-colors"
+                  >
+                    <span className="text-xl">{platform.icon}</span>
+                    <div className="flex-1 text-left">
+                      <div className="font-medium">{platform.name}</div>
+                      {address && (
+                        <div className="text-xs text-brand-primary/60">with referral link</div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Copy Link Section */}
+              <div className="border-t border-dark-border pt-4">
+                <div className="text-sm text-dark-text-secondary mb-2">Direct Link</div>
+                <div className="flex items-center space-x-2">
+                  <div className="flex-1 px-3 py-2 bg-dark-surface border border-dark-border rounded-lg text-sm text-dark-text-muted truncate">
+                    {generateShareUrl()}
+                  </div>
+                  <button
+                    onClick={handleCopyLink}
+                    className={cn(
+                      'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                      copied
+                        ? 'bg-green-500/20 text-green-400 border border-green-500/20'
+                        : 'bg-brand-primary text-white hover:opacity-90'
+                    )}
+                  >
+                    {copied ? (
+                      <div className="flex items-center space-x-1">
+                        <CheckIcon className="w-4 h-4" />
+                        <span>Copied</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-1">
+                        <ClipboardIcon className="w-4 h-4" />
+                        <span>Copy</span>
+                      </div>
+                    )}
+                  </button>
+                </div>
+                {address && (
+                  <div className="text-xs text-brand-primary/60 mt-1">
+                    ✓ Includes your referral code
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </>
