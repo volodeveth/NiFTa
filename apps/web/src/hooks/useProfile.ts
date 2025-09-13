@@ -49,8 +49,8 @@ export function useProfile() {
   }
 
   const updateProfile = async (updates: {
-    nickname?: string
-    name?: string
+    username?: string
+    displayName?: string
     website?: string
     bio?: string
     socialConnection?: SocialConnection

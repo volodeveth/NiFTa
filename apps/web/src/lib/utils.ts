@@ -64,24 +64,28 @@ export function generateGradient(seed: string): string {
   return `linear-gradient(135deg, hsl(${hue1}, 70%, 60%) 0%, hsl(${hue2}, 70%, 60%) 100%)`
 }
 
-export function getUserDisplayName(profile?: { nickname?: string; name?: string } | null, address?: string): string {
-  if (profile?.nickname) return profile.nickname
-  if (profile?.name) return profile.name
+export function getUserDisplayName(profile?: { username?: string; displayName?: string } | null, address?: string): string {
+  if (profile?.displayName) return profile.displayName
+  if (profile?.username) return `@${profile.username}`
   if (address) return formatAddress(address)
   return 'Unknown User'
 }
 
-export function getUserInitials(profile?: { nickname?: string; name?: string } | null, address?: string): string {
-  if (profile?.nickname) {
-    return profile.nickname.slice(0, 2).toUpperCase()
-  }
-  if (profile?.name) {
-    return profile.name
+export function getUserUsername(profile?: { username?: string } | null): string | null {
+  return profile?.username ? `@${profile.username}` : null
+}
+
+export function getUserInitials(profile?: { username?: string; displayName?: string } | null, address?: string): string {
+  if (profile?.displayName) {
+    return profile.displayName
       .split(' ')
       .map(n => n[0])
       .join('')
       .slice(0, 2)
       .toUpperCase()
+  }
+  if (profile?.username) {
+    return profile.username.slice(0, 2).toUpperCase()
   }
   if (address) {
     return address.slice(2, 4).toUpperCase()

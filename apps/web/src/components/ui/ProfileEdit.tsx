@@ -6,7 +6,7 @@ import {
   XMarkIcon,
   LinkIcon,
   CheckCircleIcon,
-  UserIcon,
+  AtSymbolIcon,
   IdentificationIcon
 } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
@@ -19,8 +19,8 @@ export default function ProfileEdit({ onClose }: ProfileEditProps) {
   const { profile, updateProfile, loading } = useProfile()
   
   const [formData, setFormData] = useState({
-    nickname: profile?.nickname || '',
-    name: profile?.name || '',
+    username: profile?.username || '',
+    displayName: profile?.displayName || '',
     website: profile?.website || '',
     bio: profile?.bio || ''
   })
@@ -89,45 +89,45 @@ export default function ProfileEdit({ onClose }: ProfileEditProps) {
             </button>
           </div>
 
-          {/* Nickname Field */}
+          {/* Username Field */}
           <div className="mb-6">
             <label className="block text-white font-medium mb-2 text-sm">
-              Nickname
+              Username
             </label>
             <div className="relative">
               <input
                 type="text"
-                value={formData.nickname}
-                onChange={(e) => handleInputChange('nickname', e.target.value)}
-                placeholder="Your nickname or handle"
+                value={formData.username}
+                onChange={(e) => handleInputChange('username', e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase())}
+                placeholder="username"
                 maxLength={20}
                 className="w-full px-4 py-3 bg-dark-surface border border-dark-border rounded-lg text-white placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary transition-all pl-10"
               />
-              <UserIcon className="absolute left-3 top-3.5 w-4 h-4 text-dark-text-muted" />
+              <AtSymbolIcon className="absolute left-3 top-3.5 w-4 h-4 text-dark-text-muted" />
             </div>
             <p className="text-dark-text-muted text-xs mt-1">
-              How you'd like to be known in the community
+              Your unique identifier (will appear as @{formData.username || 'username'})
             </p>
           </div>
 
-          {/* Name Field */}
+          {/* Display Name Field */}
           <div className="mb-6">
             <label className="block text-white font-medium mb-2 text-sm">
-              Full Name
+              Display Name
             </label>
             <div className="relative">
               <input
                 type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                placeholder="Your full name"
+                value={formData.displayName}
+                onChange={(e) => handleInputChange('displayName', e.target.value)}
+                placeholder="Your display name"
                 maxLength={50}
                 className="w-full px-4 py-3 bg-dark-surface border border-dark-border rounded-lg text-white placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary transition-all pl-10"
               />
               <IdentificationIcon className="absolute left-3 top-3.5 w-4 h-4 text-dark-text-muted" />
             </div>
             <p className="text-dark-text-muted text-xs mt-1">
-              Your real name (optional, for verification purposes)
+              Your public display name (can contain spaces and special characters)
             </p>
           </div>
 
