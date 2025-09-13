@@ -201,16 +201,7 @@ export default function ExplorePage() {
               <div className="text-2xl opacity-50">🖼️</div>
               
               {/* Action Buttons */}
-              <div className="absolute top-2 right-2 flex flex-col space-y-1">
-                {/* Status Badge */}
-                <div className={cn(
-                  'w-2 h-2 rounded-full',
-                  collection.isActive
-                    ? 'bg-green-400'
-                    : 'bg-red-400'
-                )}>
-                </div>
-                
+              <div className="absolute top-2 right-2">
                 {/* Share Button */}
                 <ShareButton 
                   nftId={collection.id} 
