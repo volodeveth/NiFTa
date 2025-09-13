@@ -138,7 +138,7 @@ export default function TrendingPage() {
 
             {/* NFT Info - Expanded */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-medium text-white group-hover:text-gradient transition-colors truncate">
                     {nft.name}
@@ -159,7 +159,7 @@ export default function TrendingPage() {
             </div>
 
             {/* Share Button */}
-            <div className="flex-shrink-0 ml-2">
+            <div className="flex-shrink-0 ml-4">
               <ShareButton 
                 nftId={nft.id} 
                 nftName={nft.name} 
