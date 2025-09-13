@@ -159,7 +159,7 @@ export default function TrendingPage() {
             </div>
 
             {/* Share Button */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 ml-2">
               <ShareButton 
                 nftId={nft.id} 
                 nftName={nft.name} 
