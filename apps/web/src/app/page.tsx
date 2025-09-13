@@ -80,7 +80,7 @@ export default function TrendingPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl sm:text-5xl font-bold text-gradient mb-4">
+        <h1 className="text-4xl sm:text-5xl font-bold text-gradient mb-4 leading-tight">
           Trending on NiFTa
         </h1>
         <p className="text-dark-text-secondary text-lg max-w-2xl mx-auto">
@@ -132,8 +132,8 @@ export default function TrendingPage() {
             </div>
 
             {/* NFT Image - Small */}
-            <div className="w-14 h-14 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <div className="text-xl opacity-50">🖼️</div>
+            <div className="w-16 h-16 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="text-2xl opacity-50">🖼️</div>
             </div>
 
             {/* NFT Info - Expanded */}
