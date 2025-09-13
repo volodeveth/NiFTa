@@ -1,95 +1,63 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 
-// OAuth configuration
-const OAUTH_CONFIGS = {
-  twitter: {
-    authUrl: 'https://twitter.com/i/oauth2/authorize',
-    clientId: process.env.TWITTER_CLIENT_ID,
-    scope: 'users.read tweet.read',
-    redirectUri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/twitter/callback`,
-  },
-  farcaster: {
-    authUrl: 'https://warpcast.com/~/siwf',
-    // Farcaster uses Sign In with Farcaster (SIWF) protocol
-    redirectUri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/farcaster/callback`,
-  }
-}
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { provider: string } }
 ) {
-  const { provider } = params
-  const searchParams = request.nextUrl.searchParams
-  const walletAddress = searchParams.get('wallet')
-  const returnTo = searchParams.get('returnTo') || '/profile'
+  try {
+    console.log('OAuth route called for provider:', params.provider)
+    
+    const { provider } = params
+    const searchParams = request.nextUrl.searchParams
+    const walletAddress = searchParams.get('wallet')
 
-  if (!walletAddress) {
-    return NextResponse.json({ error: 'Wallet address required' }, { status: 400 })
-  }
+    console.log('Parameters:', { provider, walletAddress })
 
-  if (!OAUTH_CONFIGS[provider as keyof typeof OAUTH_CONFIGS]) {
-    return NextResponse.json({ error: 'Unsupported provider' }, { status: 400 })
-  }
+    if (!walletAddress) {
+      return NextResponse.json({ error: 'Wallet address required' }, { status: 400 })
+    }
 
-  // Store state for verification
-  const state = generateState()
-  const cookieStore = cookies()
-  
-  cookieStore.set(`oauth_state_${provider}`, JSON.stringify({
-    state,
-    walletAddress,
-    returnTo,
-    timestamp: Date.now()
-  }), {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 600, // 10 minutes
-    sameSite: 'lax'
-  })
+    if (provider !== 'twitter' && provider !== 'farcaster') {
+      return NextResponse.json({ error: 'Unsupported provider' }, { status: 400 })
+    }
 
-  const config = OAUTH_CONFIGS[provider as keyof typeof OAUTH_CONFIGS]
+    // Simple state generation without crypto
+    const state = Math.random().toString(36).substring(2, 15)
+    
+    console.log('Generated state:', state)
 
-  if (provider === 'twitter') {
-    const twitterConfig = config as typeof OAUTH_CONFIGS.twitter
-    const params = new URLSearchParams({
-      response_type: 'code',
-      client_id: twitterConfig.clientId!,
-      redirect_uri: twitterConfig.redirectUri,
-      scope: twitterConfig.scope!,
+    const cookieStore = cookies()
+    
+    // Store state for verification
+    cookieStore.set(`oauth_state_${provider}`, JSON.stringify({
       state,
-      code_challenge: generatePKCE(),
-      code_challenge_method: 'S256'
+      walletAddress,
+      timestamp: Date.now()
+    }), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 600, // 10 minutes
+      sameSite: 'lax'
     })
 
-    const authUrl = `${config.authUrl}?${params.toString()}`
-    return NextResponse.redirect(authUrl)
+    console.log('Cookie set successfully')
+
+    // For now, always redirect to callback with mock data
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.nextUrl.origin
+    const callbackUrl = new URL(`/api/auth/${provider}/callback`, baseUrl)
+    callbackUrl.searchParams.set('code', 'mock_code_' + Date.now())
+    callbackUrl.searchParams.set('state', state)
+
+    console.log('Redirecting to:', callbackUrl.toString())
+    
+    return NextResponse.redirect(callbackUrl.toString())
+
+  } catch (error) {
+    console.error('OAuth route error:', error)
+    return NextResponse.json({ 
+      error: 'Internal server error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
-
-  if (provider === 'farcaster') {
-    // Farcaster SIWF flow
-    const params = new URLSearchParams({
-      client_id: process.env.FARCASTER_CLIENT_ID || 'nifta',
-      redirect_uri: config.redirectUri,
-      state,
-      scope: 'read'
-    })
-
-    const authUrl = `${config.authUrl}?${params.toString()}`
-    return NextResponse.redirect(authUrl)
-  }
-
-  return NextResponse.json({ error: 'Provider not implemented' }, { status: 400 })
-}
-
-function generateState(): string {
-  return Math.random().toString(36).substring(2, 15) + 
-         Math.random().toString(36).substring(2, 15)
-}
-
-function generatePKCE(): string {
-  // In production, use proper PKCE with crypto.subtle
-  return Math.random().toString(36).substring(2, 15) + 
-         Math.random().toString(36).substring(2, 15)
 }

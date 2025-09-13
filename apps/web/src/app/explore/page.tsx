@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { cn, timeAgo } from '@/lib/utils'
 import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline'
+import ShareButton from '@/components/ui/ShareButton'
 
 // Mock data for MVP
 const mockCollections = [
@@ -199,13 +200,24 @@ export default function ExplorePage() {
             <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2 flex items-center justify-center relative overflow-hidden">
               <div className="text-2xl opacity-50">🖼️</div>
               
-              {/* Status Badge */}
-              <div className={cn(
-                'absolute top-2 right-2 w-2 h-2 rounded-full',
-                collection.isActive
-                  ? 'bg-green-400'
-                  : 'bg-red-400'
-              )}>
+              {/* Action Buttons */}
+              <div className="absolute top-2 right-2 flex flex-col space-y-1">
+                {/* Status Badge */}
+                <div className={cn(
+                  'w-2 h-2 rounded-full',
+                  collection.isActive
+                    ? 'bg-green-400'
+                    : 'bg-red-400'
+                )}>
+                </div>
+                
+                {/* Share Button */}
+                <ShareButton 
+                  nftId={collection.id} 
+                  nftName={collection.name} 
+                  compact 
+                  className="z-10"
+                />
               </div>
             </div>
 

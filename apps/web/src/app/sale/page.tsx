@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { cn, timeAgo } from '@/lib/utils'
+import ShareButton from '@/components/ui/ShareButton'
 
 // Mock data for MVP
 const mockListings = [
@@ -73,8 +74,18 @@ export default function SalePage() {
             className="bg-dark-card rounded-lg p-3 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95"
           >
             {/* NFT Image */}
-            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2 flex items-center justify-center">
+            <div className="aspect-square bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2 flex items-center justify-center relative">
               <div className="text-2xl opacity-50">🖼️</div>
+              
+              {/* Share Button */}
+              <div className="absolute top-2 right-2">
+                <ShareButton 
+                  nftId={listing.id} 
+                  nftName={listing.name} 
+                  compact 
+                  className="z-10"
+                />
+              </div>
             </div>
 
             {/* NFT Info - Compact */}

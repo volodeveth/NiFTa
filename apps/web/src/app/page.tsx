@@ -9,6 +9,7 @@ import {
   EyeIcon,
   HeartIcon 
 } from '@heroicons/react/24/outline'
+import ShareButton from '@/components/ui/ShareButton'
 
 // Mock data for MVP - 10 items per category
 const mockTrendingData = {
@@ -155,6 +156,16 @@ export default function TrendingPage() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Share Button */}
+            <div className="flex-shrink-0">
+              <ShareButton 
+                nftId={nft.id} 
+                nftName={nft.name} 
+                compact 
+                className="z-10"
+              />
             </div>
           </Link>
         ))}

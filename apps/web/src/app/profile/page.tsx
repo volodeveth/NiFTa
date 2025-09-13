@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useAccount } from 'wagmi'
 import { useSearchParams } from 'next/navigation'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
@@ -17,7 +17,7 @@ import { useProfile } from '@/hooks/useProfile'
 import SocialVerification from '@/components/ui/SocialVerification'
 import ProfileEdit from '@/components/ui/ProfileEdit'
 
-export default function ProfilePage() {
+function ProfileContent() {
   const { address, isConnected } = useAccount()
   const searchParams = useSearchParams()
   const { profile, updateProfile } = useProfile()
@@ -322,5 +322,20 @@ export default function ProfilePage() {
         <ProfileEdit onClose={() => setShowProfileEdit(false)} />
       )}
     </div>
+  )
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
+          <p className="text-dark-text-secondary mt-4">Loading profile...</p>
+        </div>
+      </div>
+    }>
+      <ProfileContent />
+    </Suspense>
   )
 }
