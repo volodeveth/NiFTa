@@ -79,17 +79,17 @@ export default function TrendingPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl sm:text-5xl font-bold text-gradient mb-4">
+      <div className="text-center mb-6">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gradient mb-2">
           Trending on NiFTa
         </h1>
-        <p className="text-dark-text-secondary text-lg max-w-2xl mx-auto">
+        <p className="text-dark-text-secondary text-base max-w-2xl mx-auto">
           Discover the hottest NFTs minting right now on Base network
         </p>
       </div>
 
       {/* Time Filters */}
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-6">
         <div className="flex items-center space-x-2 bg-dark-card rounded-xl p-2">
           {timeFilters.map((filter) => {
             const Icon = filter.icon
@@ -118,11 +118,11 @@ export default function TrendingPage() {
           <Link
             key={nft.id}
             href={`/nft/${nft.id}`}
-            className="group bg-dark-card rounded-lg p-3 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95 flex items-center space-x-3"
+            className="group bg-dark-card rounded-lg p-4 border border-dark-border hover:border-brand-primary/50 transition-all duration-300 active:scale-95 flex items-center space-x-4 min-h-[72px]"
           >
             {/* Rank Badge */}
             <div className={cn(
-              'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0',
+              'w-10 h-10 rounded-full flex items-center justify-center text-base font-bold flex-shrink-0',
               index === 0 ? 'bg-yellow-500 text-black' :
               index === 1 ? 'bg-gray-300 text-black' :
               index === 2 ? 'bg-yellow-600 text-white' :
@@ -132,26 +132,26 @@ export default function TrendingPage() {
             </div>
 
             {/* NFT Image - Small */}
-            <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-              <div className="text-lg opacity-50">🖼️</div>
+            <div className="w-14 h-14 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="text-xl opacity-50">🖼️</div>
             </div>
 
             {/* NFT Info - Expanded */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-white group-hover:text-gradient transition-colors truncate">
+                  <h3 className="text-base font-medium text-white group-hover:text-gradient transition-colors truncate">
                     {nft.name}
                   </h3>
-                  <p className="text-dark-text-secondary text-xs truncate">
+                  <p className="text-dark-text-secondary text-sm truncate">
                     {nft.creator}
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-brand-primary font-medium text-sm whitespace-nowrap">
+                  <div className="text-brand-primary font-medium text-base whitespace-nowrap">
                     {nft.price} ETH
                   </div>
-                  <div className="text-dark-text-muted text-xs whitespace-nowrap">
+                  <div className="text-dark-text-muted text-sm whitespace-nowrap">
                     {nft.mints} mints • {nft.likes}♥
                   </div>
                 </div>
