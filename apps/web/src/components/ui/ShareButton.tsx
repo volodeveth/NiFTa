@@ -104,7 +104,7 @@ export default function ShareButton({ nftId, nftName, className, compact = false
     setIsOpen(false)
   }
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside and handle body scroll
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -114,9 +114,20 @@ export default function ShareButton({ nftId, nftName, className, compact = false
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
+      
+      // Block scroll on mobile when modal is open
+      if (isMobile) {
+        document.body.style.overflow = 'hidden'
+      }
+      
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+        if (isMobile) {
+          document.body.style.overflow = 'unset'
+        }
+      }
     }
-  }, [isOpen])
+  }, [isOpen, isMobile])
 
   if (compact) {
     // Compact version for NFT cards
@@ -136,11 +147,23 @@ export default function ShareButton({ nftId, nftName, className, compact = false
 
         {/* Compact Dropdown */}
         {isOpen && (
-          <div className={cn(
-            "absolute top-full mt-2 bg-dark-card border border-dark-border rounded-lg shadow-xl z-50 min-w-[180px]",
-            isMobile ? "left-1/2 transform -translate-x-1/2" : "right-0"
-          )}>
-            <div className="p-2 space-y-1">
+          <>
+            {/* Mobile Overlay */}
+            {isMobile && (
+              <div 
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                onClick={() => setIsOpen(false)}
+              />
+            )}
+            
+            {/* Dropdown Content */}
+            <div className={cn(
+              "z-50 bg-dark-card border border-dark-border rounded-lg shadow-xl min-w-[180px]",
+              isMobile 
+                ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
+                : "absolute top-full right-0 mt-2"
+            )}>
+              <div className="p-2 space-y-1">
               {/* Social platforms */}
               {Object.entries(SOCIAL_PLATFORMS).map(([key, platform]) => (
                 <button
@@ -173,8 +196,9 @@ export default function ShareButton({ nftId, nftName, className, compact = false
                 )}
                 <span>{copied ? 'Copied!' : 'Copy Link'}</span>
               </button>
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     )
@@ -193,10 +217,22 @@ export default function ShareButton({ nftId, nftName, className, compact = false
 
       {/* Full Dropdown */}
       {isOpen && (
-        <div className={cn(
-          "absolute top-full mt-2 bg-dark-card border border-dark-border rounded-xl shadow-xl z-50 min-w-[280px] max-w-[90vw]",
-          isMobile ? "left-1/2 transform -translate-x-1/2" : "right-0"
-        )}>
+        <>
+          {/* Mobile Overlay */}
+          {isMobile && (
+            <div 
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+              onClick={() => setIsOpen(false)}
+            />
+          )}
+          
+          {/* Dropdown Content */}
+          <div className={cn(
+            "z-50 bg-dark-card border border-dark-border rounded-xl shadow-xl min-w-[280px] max-w-[90vw]",
+            isMobile 
+              ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
+              : "absolute top-full right-0 mt-2"
+          )}>
           <div className="p-4">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
@@ -289,7 +325,7 @@ export default function ShareButton({ nftId, nftName, className, compact = false
               )}
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   )
