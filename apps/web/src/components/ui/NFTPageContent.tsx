@@ -184,7 +184,13 @@ export default function NFTPageContent() {
         <div className="space-y-6">
           {/* Header */}
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">{nft.name}</h1>
+            <div className="flex items-start justify-between mb-2">
+              <h1 className="text-3xl font-bold text-white">{nft.name}</h1>
+              <ShareButton 
+                nftId={nft.id} 
+                nftName={nft.name} 
+              />
+            </div>
             <div className="flex items-center space-x-4 text-dark-text-secondary">
               <div className="flex items-center space-x-2">
                 <UserIcon className="w-4 h-4" />
@@ -367,13 +373,6 @@ export default function NFTPageContent() {
             </div>
           </div>
 
-          {/* Share Section */}
-          <div className="flex justify-center">
-            <ShareButton 
-              nftId={nft.id} 
-              nftName={nft.name} 
-            />
-          </div>
         </div>
       </div>
     </div>
