@@ -77,13 +77,13 @@ export default function TrendingPage() {
   const currentData = mockTrendingData[activeFilter]
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-1 pb-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gradient mb-2">
+        <h1 className="text-4xl sm:text-5xl font-bold text-gradient mb-4">
           Trending on NiFTa
         </h1>
-        <p className="text-dark-text-secondary text-base max-w-2xl mx-auto">
+        <p className="text-dark-text-secondary text-lg max-w-2xl mx-auto">
           Discover the hottest NFTs minting right now on Base network
         </p>
       </div>
