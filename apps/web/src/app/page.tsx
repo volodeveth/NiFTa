@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { cn, formatNumber } from '@/lib/utils'
 import { 
   ClockIcon,
   FireIcon,
@@ -152,7 +152,7 @@ export default function TrendingPage() {
                     {nft.price} ETH
                   </div>
                   <div className="text-dark-text-muted text-sm whitespace-nowrap">
-                    {nft.mints} mints • {nft.likes}♥
+                    {formatNumber(nft.mints)} mints • {formatNumber(nft.likes)}♥
                   </div>
                 </div>
               </div>
