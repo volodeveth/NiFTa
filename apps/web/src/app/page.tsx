@@ -136,9 +136,9 @@ export default function TrendingPage() {
               <div className="text-2xl opacity-50">🖼️</div>
             </div>
 
-            {/* NFT Info - Expanded */}
+            {/* NFT Info - Mobile Optimized */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-medium text-white group-hover:text-gradient transition-colors truncate">
                     {nft.name}
@@ -146,8 +146,13 @@ export default function TrendingPage() {
                   <p className="text-dark-text-secondary text-sm truncate">
                     {nft.creator}
                   </p>
+                  {/* Mobile: Mints and likes under creator name */}
+                  <div className="text-dark-text-muted text-sm mt-1 sm:hidden">
+                    {formatNumber(nft.mints)} mints • {formatNumber(nft.likes)}♥
+                  </div>
                 </div>
-                <div className="text-right flex-shrink-0">
+                {/* Desktop: Price and stats on the right */}
+                <div className="text-right flex-shrink-0 hidden sm:block">
                   <div className="text-brand-primary font-medium text-base whitespace-nowrap">
                     {nft.price} ETH
                   </div>
@@ -158,12 +163,12 @@ export default function TrendingPage() {
               </div>
             </div>
 
-            {/* Share Button */}
-            <div className="flex-shrink-0 ml-4">
-              <ShareButton 
-                nftId={nft.id} 
-                nftName={nft.name} 
-                compact 
+            {/* Share Button - Desktop Only */}
+            <div className="flex-shrink-0 ml-4 hidden sm:block">
+              <ShareButton
+                nftId={nft.id}
+                nftName={nft.name}
+                compact
                 className="z-10"
               />
             </div>
