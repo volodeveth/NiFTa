@@ -84,7 +84,7 @@ function ProfileContent() {
                 <h1 className="text-xl font-bold text-white">
                   {hasCustomProfile(profile) ? getUserDisplayName(profile, address) : formatAddress(address!)}
                 </h1>
-                {profile?.isVerified && (
+                {profile?.isVerified && hasCustomProfile(profile) && (
                   <CheckBadgeIcon className="w-5 h-5 text-brand-primary" title="Verified Profile" />
                 )}
               </div>
