@@ -17,6 +17,7 @@ export interface ProfileData {
   displayName?: string
   website?: string
   bio?: string
+  profileImage?: string
   socialConnections: SocialConnection[]
   isVerified: boolean
   verifiedAt?: string
