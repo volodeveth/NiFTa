@@ -53,12 +53,26 @@ export function useProfile() {
     displayName?: string
     website?: string
     bio?: string
+    profileImage?: string
     socialConnection?: SocialConnection
   }) => {
     if (!address) {
       throw new Error('Wallet not connected')
     }
 
+    // Optimistic update - immediately update local state
+    const previousProfile = profile
+    const optimisticProfile = profile ? {
+      ...profile,
+      ...updates
+    } : {
+      walletAddress: address,
+      socialConnections: [],
+      isVerified: false,
+      ...updates
+    } as ProfileData
+
+    setProfile(optimisticProfile)
     setLoading(true)
     setError(null)
 
@@ -75,6 +89,8 @@ export function useProfile() {
       })
 
       if (!response.ok) {
+        // Rollback on error
+        setProfile(previousProfile)
         throw new Error('Failed to update profile')
       }
 
@@ -82,6 +98,8 @@ export function useProfile() {
       setProfile(updatedProfile)
       return updatedProfile
     } catch (err) {
+      // Ensure rollback happened
+      setProfile(previousProfile)
       const errorMessage = err instanceof Error ? err.message : 'Unknown error'
       setError(errorMessage)
       throw new Error(errorMessage)

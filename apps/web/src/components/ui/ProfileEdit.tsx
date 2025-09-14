@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useProfile } from '@/hooks/useProfile'
 import {
   XMarkIcon,
@@ -32,6 +32,19 @@ export default function ProfileEdit({ onClose }: ProfileEditProps) {
   
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  // Sync form data with profile changes
+  useEffect(() => {
+    if (profile && !saving) {
+      setFormData({
+        username: profile.username || '',
+        displayName: profile.displayName || '',
+        website: profile.website || '',
+        bio: profile.bio || '',
+        profileImage: profile.profileImage || ''
+      })
+    }
+  }, [profile, saving])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
