@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useAccount } from 'wagmi'
 import { useSearchParams } from 'next/navigation'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { cn, formatAddress, getUserDisplayName, getUserInitials, getUserUsername } from '@/lib/utils'
+import { cn, formatAddress, getUserDisplayName, getUserUsername, hasCustomProfile } from '@/lib/utils'
 import { 
   PencilIcon,
   LinkIcon,
@@ -16,6 +16,7 @@ import { CheckBadgeIcon } from '@heroicons/react/24/solid'
 import { useProfile } from '@/hooks/useProfile'
 import SocialVerification from '@/components/ui/SocialVerification'
 import ProfileEdit from '@/components/ui/ProfileEdit'
+import UserAvatar from '@/components/ui/UserAvatar'
 
 function ProfileContent() {
   const { address, isConnected } = useAccount()
@@ -73,32 +74,32 @@ function ProfileContent() {
       <div className="bg-dark-card rounded-xl p-4 border border-dark-border mb-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-brand rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-lg">
-                {getUserInitials(profile, address)}
-              </span>
-            </div>
+            <UserAvatar
+              address={address!}
+              profile={profile}
+              size="md"
+            />
             <div>
               <div className="flex items-center space-x-2 mb-1">
                 <h1 className="text-xl font-bold text-white">
-                  {getUserDisplayName(profile, address)}
+                  {hasCustomProfile(profile) ? getUserDisplayName(profile, address) : formatAddress(address!)}
                 </h1>
                 {profile?.isVerified && (
                   <CheckBadgeIcon className="w-5 h-5 text-brand-primary" title="Verified Profile" />
                 )}
               </div>
-              {getUserUsername(profile) && (
+              {hasCustomProfile(profile) && getUserUsername(profile) && (
                 <p className="text-brand-primary text-sm font-medium">
                   {getUserUsername(profile)}
                 </p>
               )}
-              {(profile?.username || profile?.displayName) && (
+              {hasCustomProfile(profile) && (
                 <p className="text-dark-text-muted text-xs font-mono">
                   {formatAddress(address!)}
                 </p>
               )}
               <p className="text-dark-text-secondary text-sm">
-                {profile?.bio || 'NFT Creator & Collector'}
+                {profile?.bio || (hasCustomProfile(profile) ? 'NFT Creator & Collector' : 'Connect wallet to customize profile')}
               </p>
               {profile?.website && (
                 <a

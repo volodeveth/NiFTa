@@ -64,6 +64,34 @@ export function generateGradient(seed: string): string {
   return `linear-gradient(135deg, hsl(${hue1}, 70%, 60%) 0%, hsl(${hue2}, 70%, 60%) 100%)`
 }
 
+// NiFTa logo color variants for profile avatars
+const NIFTA_LOGO_COLORS = [
+  { primary: '#3B82F6', secondary: '#8B5CF6' }, // Blue to Purple
+  { primary: '#10B981', secondary: '#06B6D4' }, // Green to Cyan
+  { primary: '#F59E0B', secondary: '#EF4444' }, // Orange to Red
+  { primary: '#8B5CF6', secondary: '#EC4899' }, // Purple to Pink
+  { primary: '#06B6D4', secondary: '#3B82F6' }, // Cyan to Blue
+  { primary: '#EF4444', secondary: '#F59E0B' }, // Red to Orange
+  { primary: '#EC4899', secondary: '#8B5CF6' }, // Pink to Purple
+  { primary: '#10B981', secondary: '#F59E0B' }, // Green to Orange
+]
+
+// Generate consistent NiFTa logo colors for user
+export function getNiftaLogoColors(address: string): { primary: string; secondary: string } {
+  const hash = address.split('').reduce((a, b) => {
+    a = ((a << 5) - a) + b.charCodeAt(0)
+    return a & a
+  }, 0)
+
+  const index = Math.abs(hash) % NIFTA_LOGO_COLORS.length
+  return NIFTA_LOGO_COLORS[index]
+}
+
+// Check if user has custom profile data
+export function hasCustomProfile(profile?: { username?: string; displayName?: string; profileImage?: string } | null): boolean {
+  return Boolean(profile?.username || profile?.displayName || profile?.profileImage)
+}
+
 export function getUserDisplayName(profile?: { username?: string; displayName?: string } | null, address?: string): string {
   if (profile?.displayName) return profile.displayName
   if (profile?.username) return `@${profile.username}`

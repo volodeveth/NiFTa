@@ -143,9 +143,13 @@ export default function TrendingPage() {
                   <h3 className="text-base font-medium text-white group-hover:text-gradient transition-colors truncate">
                     {nft.name}
                   </h3>
-                  <p className="text-dark-text-secondary text-sm truncate">
-                    {nft.creator}
-                  </p>
+                  <Link
+                    href={`/profile`}
+                    className="text-dark-text-secondary text-sm truncate hover:text-brand-primary transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    by {nft.creator}
+                  </Link>
                   {/* Mobile: Mints and likes under creator name */}
                   <div className="text-dark-text-muted text-sm mt-1 sm:hidden">
                     {formatNumber(nft.mints)} mints • {formatNumber(nft.likes)}♥

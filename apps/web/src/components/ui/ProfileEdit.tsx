@@ -2,14 +2,17 @@
 
 import { useState } from 'react'
 import { useProfile } from '@/hooks/useProfile'
-import { 
+import {
   XMarkIcon,
   LinkIcon,
   CheckCircleIcon,
   AtSymbolIcon,
-  IdentificationIcon
+  IdentificationIcon,
+  PhotoIcon
 } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
+import UserAvatar from './UserAvatar'
+import { useAccount } from 'wagmi'
 
 interface ProfileEditProps {
   onClose: () => void
@@ -17,12 +20,14 @@ interface ProfileEditProps {
 
 export default function ProfileEdit({ onClose }: ProfileEditProps) {
   const { profile, updateProfile, loading } = useProfile()
+  const { address } = useAccount()
   
   const [formData, setFormData] = useState({
     username: profile?.username || '',
     displayName: profile?.displayName || '',
     website: profile?.website || '',
-    bio: profile?.bio || ''
+    bio: profile?.bio || '',
+    profileImage: profile?.profileImage || ''
   })
   
   const [saving, setSaving] = useState(false)
@@ -89,6 +94,30 @@ export default function ProfileEdit({ onClose }: ProfileEditProps) {
             </button>
           </div>
 
+          {/* Profile Preview */}
+          <div className="mb-6 p-4 bg-dark-surface rounded-lg border border-dark-border">
+            <h3 className="text-white font-medium mb-3 text-sm">Preview</h3>
+            <div className="flex items-center space-x-3">
+              <UserAvatar
+                address={address!}
+                profile={{
+                  username: formData.username,
+                  displayName: formData.displayName,
+                  profileImage: formData.profileImage
+                }}
+                size="md"
+              />
+              <div>
+                <p className="text-white font-medium">
+                  {formData.displayName || formData.username || 'Unnamed User'}
+                </p>
+                {formData.username && (
+                  <p className="text-brand-primary text-sm">@{formData.username}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Username Field */}
           <div className="mb-6">
             <label className="block text-white font-medium mb-2 text-sm">
@@ -128,6 +157,26 @@ export default function ProfileEdit({ onClose }: ProfileEditProps) {
             </div>
             <p className="text-dark-text-muted text-xs mt-1">
               Your public display name (can contain spaces and special characters)
+            </p>
+          </div>
+
+          {/* Profile Image Field */}
+          <div className="mb-6">
+            <label className="block text-white font-medium mb-2 text-sm">
+              Profile Image
+            </label>
+            <div className="relative">
+              <input
+                type="url"
+                value={formData.profileImage}
+                onChange={(e) => handleInputChange('profileImage', e.target.value)}
+                placeholder="https://example.com/image.jpg"
+                className="w-full px-4 py-3 bg-dark-surface border border-dark-border rounded-lg text-white placeholder-dark-text-muted focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary transition-all pl-10"
+              />
+              <PhotoIcon className="absolute left-3 top-3.5 w-4 h-4 text-dark-text-muted" />
+            </div>
+            <p className="text-dark-text-muted text-xs mt-1">
+              URL to your profile image (leave empty to use colorful NiFTa logo)
             </p>
           </div>
 

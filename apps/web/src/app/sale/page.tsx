@@ -94,9 +94,6 @@ export default function SalePage() {
                 <h3 className="text-sm font-semibold text-white line-clamp-1">
                   {listing.name}
                 </h3>
-                <p className="text-dark-text-secondary text-xs line-clamp-1">
-                  {listing.collection}
-                </p>
               </div>
 
               <div className="flex items-center justify-between">
@@ -108,9 +105,13 @@ export default function SalePage() {
                 </div>
               </div>
 
-              <div className="text-dark-text-muted text-xs line-clamp-1">
+              <Link
+                href={`/profile`}
+                className="text-dark-text-muted text-xs line-clamp-1 hover:text-brand-primary transition-colors inline-block"
+                onClick={(e) => e.stopPropagation()}
+              >
                 by {listing.seller}
-              </div>
+              </Link>
 
               {/* Buy Button - Compact */}
               <button className="w-full bg-gradient-brand text-white py-1.5 px-3 rounded-lg font-medium hover:opacity-90 transition-opacity text-xs mt-2">
